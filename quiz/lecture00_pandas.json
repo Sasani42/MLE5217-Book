@@ -1,0 +1,135 @@
+[
+  {
+    "question": "df.head() shows the first 5 rows by default. What does the following code do?",
+    "code": "import pandas as pd\n\ndf = pd.read_csv(\"materials.csv\")\nprint(df.head(10))",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Shows the first 10 rows",
+        "correct": true,
+        "feedback": "Correct! head() accepts an optional number - df.head(10) shows the first 10 rows. Equally useful: df.tail(10) shows the last 10, which is handy for checking the end of a dataset after sorting or filtering."
+      },
+      {
+        "answer": "Shows 10 random rows",
+        "correct": false,
+        "feedback": "Not quite - head() always starts from the top. For random rows, you'd use df.sample(10)."
+      },
+      {
+        "answer": "Shows the first 5 rows and ignores the 10",
+        "correct": false,
+        "feedback": "The default is 5 only when no number is given. Passing 10 overrides the default."
+      },
+      {
+        "answer": "Throws an error - head() doesn't accept arguments",
+        "correct": false,
+        "feedback": "head() does accept an argument. df.head() and df.head(5) do exactly the same thing - 5 is just the default."
+      }
+    ]
+  },
+  {
+    "question": "You run df.describe() on a materials dataset and notice that the 'count' for the density column is 147, while all other columns show 150. What does this tell you?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "The density column has 3 missing values",
+        "correct": true,
+        "feedback": "Correct! describe() counts only non-missing values, so a lower count than the total number of rows reveals missing data. This is a quick way to spot gaps without running isna().sum() - though that gives you the same information more explicitly."
+      },
+      {
+        "answer": "The density column only has 147 unique values",
+        "correct": false,
+        "feedback": "Count in describe() refers to the number of non-missing entries, not unique values. For unique values you'd use df['density'].nunique()."
+      },
+      {
+        "answer": "The dataset only has 147 rows",
+        "correct": false,
+        "feedback": "If the dataset had 147 rows, all columns would show count = 147. The fact that only density shows 147 points to 3 missing values specifically in that column."
+      },
+      {
+        "answer": "Nothing - count differences between columns are normal",
+        "correct": false,
+        "feedback": "Actually this is a useful signal! Differences in count across columns in describe() are a reliable indicator of missing data in specific columns."
+      }
+    ]
+  },
+  {
+    "question": "You have a dataset with some missing values in the 'bandgap' column. What is the difference between these two approaches?",
+    "code": "# Approach A\ndf_clean = df.dropna(subset=['bandgap'])\n\n# Approach B\ndf_clean = df.fillna({'bandgap': df['bandgap'].mean()})",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Approach A removes rows with missing bandgap values; Approach B replaces them with the column mean",
+        "correct": true,
+        "feedback": "Correct! dropna() discards the row entirely - you lose all the other properties of that material too. fillna() keeps the row and fills the gap with an estimated value. Which is better depends on context: if you have lots of data, dropping is fine. If each row represents a hard-to-synthesise material, filling is much more valuable."
+      },
+      {
+        "answer": "They do the same thing, just written differently",
+        "correct": false,
+        "feedback": "They handle missing values in opposite ways - one removes rows, the other fills them in. The choice matters a lot when your dataset is small."
+      },
+      {
+        "answer": "Approach A is faster; Approach B is more accurate",
+        "correct": false,
+        "feedback": "Speed isn't the distinction. The key difference is whether you keep or discard rows with missing values."
+      },
+      {
+        "answer": "Approach B throws an error - you can't fill missing values with a calculated number",
+        "correct": false,
+        "feedback": "fillna() works perfectly with calculated values like the mean. This is actually a very common technique in data preprocessing called mean imputation."
+      }
+    ]
+  },
+  {
+    "question": "You want to filter a DataFrame to find materials that are both lightweight (density < 3) AND have a bandgap suitable for solar cells (1.0 < bandgap < 1.8). A student writes the following - what is wrong with it?",
+    "code": "solar_candidates = df[df['density'] < 3 and df['bandgap'] > 1.0 and df['bandgap'] < 1.8]",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Nothing - the code is correct",
+        "correct": false,
+        "feedback": "This will actually throw a ValueError! Python's 'and' keyword doesn't work with arrays - it can only compare single True/False values, not a whole column of them."
+      },
+      {
+        "answer": "'and' should be replaced with '&', and each condition should be wrapped in brackets",
+        "correct": true,
+        "feedback": "Correct! For combining conditions on arrays, you must use '&' (bitwise AND) instead of 'and', and each condition needs its own brackets to avoid ambiguity. The correct version is: df[(df['density'] < 3) & (df['bandgap'] > 1.0) & (df['bandgap'] < 1.8)]. This is one of the most common mistakes when starting with pandas."
+      },
+      {
+        "answer": "You cannot filter by more than one condition at a time in pandas",
+        "correct": false,
+        "feedback": "You absolutely can - and it's very useful! You just need the right operator. Use '&' for AND, '|' for OR, and wrap each condition in its own brackets."
+      },
+      {
+        "answer": "The column names should use double quotes, not single quotes",
+        "correct": false,
+        "feedback": "Both single and double quotes work identically in Python for strings. The issue is the 'and' keyword, not the quote style."
+      }
+    ]
+  },
+  {
+    "question": "You want to visualise the distribution of bandgap values across your dataset. Which plot type is most appropriate, and how do you call it?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "df['bandgap'].plot(kind='hist') - a histogram shows the distribution of a single numerical variable",
+        "correct": true,
+        "feedback": "Correct! A histogram groups values into bins and counts how many fall in each — perfect for seeing the shape of a distribution. You could also use df['bandgap'].hist() as a shortcut. If you want to compare the distributions of two properties side by side, df[['bandgap','density']].plot(kind='hist') plots both on the same axes."
+      },
+      {
+        "answer": "df['bandgap'].plot(kind='line') - a line plot connects all data points in order",
+        "correct": false,
+        "feedback": "A line plot implies a meaningful sequence (like temperature over time). For a single property across many materials with no particular order, a histogram is more informative."
+      },
+      {
+        "answer": "df['bandgap'].plot(kind='bar') - a bar chart shows each value as a separate bar",
+        "correct": false,
+        "feedback": "A bar chart works well for categorical data (e.g. count per material class) but gets unreadable with many numerical values. A histogram is designed exactly for showing how a continuous variable is distributed."
+      },
+      {
+        "answer": "df['bandgap'].plot(kind='scatter') - a scatter plot shows all the data points",
+        "correct": false,
+        "feedback": "Scatter plots need two columns (x and y) to show a relationship between two variables. For the distribution of a single variable, a histogram is the right choice."
+      }
+    ]
+  }
+]

@@ -1,0 +1,132 @@
+[
+  {
+    "question": "Biologists feed thousands of gene expression profiles into a model - with no labels - and ask it to find natural groupings. Some clusters turn out to correspond to previously unknown subtypes of cancer. What type of learning is this?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Supervised learning",
+        "correct": false,
+        "feedback": "Not quite - supervised learning requires labelled data. Here, the biologists don't know the groupings in advance. There are no labels like 'subtype A' or 'subtype B' - the algorithm discovers them on its own."
+      },
+      {
+        "answer": "Unsupervised learning",
+        "correct": true,
+        "feedback": "Correct! This is a classic clustering problem - a form of unsupervised learning. The model finds hidden structure in unlabelled data. The fact that the discovered groups turn out to be meaningful (new cancer subtypes) is exactly what makes unsupervised learning so powerful in scientific discovery."
+      },
+      {
+        "answer": "Reinforcement learning",
+        "correct": false,
+        "feedback": "Reinforcement learning involves an agent taking actions and receiving rewards. There is no trial-and-error loop or reward signal here - just a search for patterns in static data."
+      },
+      {
+        "answer": "Semi-supervised learning",
+        "correct": false,
+        "feedback": "Semi-supervised learning uses a mix of labelled and unlabelled data. Here there are no labels at all — making this purely unsupervised."
+      }
+    ]
+  },
+  {
+    "question": "A team of materials scientists measures the bandgap and melting point of 10,000 compounds experimentally. They train a model on this data so that it can predict the bandgap of a new compound from its chemical formula alone - without measuring it. What type of learning is this?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Unsupervised learning",
+        "correct": false,
+        "feedback": "Unsupervised learning works with unlabelled data. Here, every compound has a measured bandgap — that measurement is the label. The model learns the relationship between input (formula) and output (bandgap)."
+      },
+      {
+        "answer": "Reinforcement learning",
+        "correct": false,
+        "feedback": "No agent, no environment, no reward signal here. The model is trained on a fixed dataset of labelled measurements."
+      },
+      {
+        "answer": "Supervised learning - specifically regression",
+        "correct": true,
+        "feedback": "Correct! The measured bandgap values are the labels, and the model learns to predict a continuous number (bandgap) from the input features. Predicting a number rather than a category makes this a regression task - one of the two main flavours of supervised learning."
+      },
+      {
+        "answer": "Self-supervised learning",
+        "correct": false,
+        "feedback": "Self-supervised learning generates its own labels from the data itself - for example, predicting a hidden part of the input. Here the labels (measured bandgaps) come from real experiments, not from the data itself."
+      }
+    ]
+  },
+  {
+    "question": "A robotic arm in a lab needs to learn how to pick up and sort material samples of different shapes and sizes. Nobody programs the exact movements - instead, the robot tries different actions, gets a positive signal when it picks up a sample successfully, and a negative signal when it drops it. Over thousands of attempts, it gets better and better. What type of learning is this?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Supervised learning",
+        "correct": false,
+        "feedback": "Supervised learning trains on a fixed dataset of labelled examples. Here there is no dataset - the robot learns through live interaction with its environment, not from pre-collected data."
+      },
+      {
+        "answer": "Unsupervised learning",
+        "correct": false,
+        "feedback": "Unsupervised learning finds patterns in static, unlabelled data. Here the robot is actively taking actions and receiving feedback - a very different setup."
+      },
+      {
+        "answer": "Reinforcement learning",
+        "correct": true,
+        "feedback": "Correct! All the key ingredients are here - an agent (the robot), an environment (the lab), actions (movements), and rewards (success or failure signals). The robot develops a policy over time by learning which actions lead to the best outcomes. This is the essence of reinforcement learning."
+      },
+      {
+        "answer": "Semi-supervised learning",
+        "correct": false,
+        "feedback": "Semi-supervised learning uses a mix of labelled and unlabelled data. This scenario involves trial-and-error interaction with an environment - that's reinforcement learning."
+      }
+    ]
+  },
+  {
+    "question": "A research group wants to classify 100,000 microscopy images of alloy microstructures as either 'defective' or 'non-defective'. Manually labelling all 100,000 images is too expensive, so they label just 500 of them carefully, and feed all 100,000 (labelled and unlabelled together) into the model. What type of learning is this?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Supervised learning",
+        "correct": false,
+        "feedback": "Pure supervised learning uses only labelled data. Here, the majority of images have no label - the model is deliberately designed to exploit both labelled and unlabelled data together."
+      },
+      {
+        "answer": "Unsupervised learning",
+        "correct": false,
+        "feedback": "Unsupervised learning uses no labels at all. Here, 500 images do have labels - and those labels are an important part of the training process."
+      },
+      {
+        "answer": "Reinforcement learning",
+        "correct": false,
+        "feedback": "There is no agent, no environment, and no reward signal here. This is a classification task on image data."
+      },
+      {
+        "answer": "Semi-supervised learning",
+        "correct": true,
+        "feedback": "Correct! A small amount of labelled data combined with a large amount of unlabelled data is the defining characteristic of semi-supervised learning. This is very common in real research settings where labelling data is costly or time-consuming - which is often the case in materials science."
+      }
+    ]
+  },
+  {
+    "question": "A language model is trained by taking millions of sentences, hiding one word in each sentence, and asking the model to predict the missing word. No human labels are used - the correct answer is already in the original text. What type of learning is this?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Supervised learning",
+        "correct": false,
+        "feedback": "Supervised learning relies on labels provided by humans. Here, no human does any labelling - the labels are generated automatically from the data itself."
+      },
+      {
+        "answer": "Unsupervised learning",
+        "correct": false,
+        "feedback": "Unsupervised learning finds structure in data without any labels or prediction target. Here the model does have a clear target - predicting the missing word - it just generates that target itself rather than relying on humans."
+      },
+      {
+        "answer": "Reinforcement learning",
+        "correct": false,
+        "feedback": "No agent or reward loop here. The model trains on a fixed dataset of text, generating its own supervision signal from the structure of the data."
+      },
+      {
+        "answer": "Self-supervised learning",
+        "correct": true,
+        "feedback": "Correct! Self-supervised learning is where the model creates its own labels from the raw data - in this case, by hiding part of the input and predicting it. This is exactly how large language models (like the ones powering modern AI assistants) are pre-trained, often on billions of sentences. It's one of the most impactful ideas in modern machine learning."
+      }
+    ]
+  }
+]

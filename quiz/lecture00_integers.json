@@ -1,0 +1,118 @@
+[
+  {
+    "question": "Which of the following is an integer in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "\"42\"",
+        "correct": false,
+        "feedback": "Close! But the quotes make this a string - Python treats it as text, not a number you can do maths with."
+      },
+      {
+        "answer": "42",
+        "correct": true,
+        "feedback": "Correct! A whole number with no quotes and no decimal point is an integer in Python."
+      },
+      {
+        "answer": "42.0",
+        "correct": false,
+        "feedback": "Not quite - the decimal point makes this a float, not an integer, even though the value is the same."
+      },
+      {
+        "answer": "True",
+        "correct": false,
+        "feedback": "Interesting one - True is a boolean. Though Python does treat True as 1 and False as 0 internally, its type is bool, not int."
+      }
+    ]
+  },
+  {
+    "question": "What does 7 // 2 return in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "3.5",
+        "correct": false,
+        "feedback": "That's what 7 / 2 gives you. The double slash // is floor division - it returns only the whole number part."
+      },
+      {
+        "answer": "3",
+        "correct": true,
+        "feedback": "Correct! // is floor division - it divides and drops the remainder, giving just the whole number."
+      },
+      {
+        "answer": "1",
+        "correct": false,
+        "feedback": "That would be 7 % 2 - the modulo operator, which returns the remainder instead."
+      },
+      {
+        "answer": "4",
+        "correct": false,
+        "feedback": "Not quite - // rounds down, not up. 7 divided by 2 is 3.5, which rounds down to 3."
+      }
+    ]
+  },
+  {
+    "question": "What does 7 % 3 return?",
+    "type": "numeric",
+    "answers": [
+      {
+        "type": "value",
+        "value": 1,
+        "correct": true,
+        "feedback": "Correct! % is the modulo operator - it returns the remainder after division. 7 divided by 3 is 2 remainder 1."
+      }
+    ]
+  },
+  {
+    "question": "What does this return?  \n\n atomic_number = 6  \n is_carbon = (atomic_number == 6)  \n print(is_carbon)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "6",
+        "correct": false,
+        "feedback": "Not quite - == doesn't assign a value, it asks a question: 'is atomic_number equal to 6?' The answer is yes or no."
+      },
+      {
+        "answer": "True",
+        "correct": true,
+        "feedback": "Correct! == is a comparison operator. Since atomic_number is 6, the comparison is True."
+      },
+      {
+        "answer": "False",
+        "correct": false,
+        "feedback": "Not quite - atomic_number is 6, so atomic_number == 6 is True, not False."
+      },
+      {
+        "answer": "An error",
+        "correct": false,
+        "feedback": "No error here - this is perfectly valid Python. == compares two values and returns True or False."
+      }
+    ]
+  },
+  {
+    "question": "A material is considered suitable if its melting point is above 1000°C AND its density is below 5 g/cm³. Given melting_point = 1200 and density = 4, which expression correctly checks this in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "melting_point > 1000 and density < 5",
+        "correct": true,
+        "feedback": "Correct! 'and' checks that both conditions are True at the same time - exactly what we need here."
+      },
+      {
+        "answer": "melting_point > 1000 or density < 5",
+        "correct": false,
+        "feedback": "Not quite - 'or' only requires one condition to be True. We need both to be satisfied simultaneously."
+      },
+      {
+        "answer": "melting_point > 1000 & density < 5",
+        "correct": false,
+        "feedback": "Close - & is a bitwise operator in Python, not the same as 'and'. For logical comparisons like this, always use 'and'."
+      },
+      {
+        "answer": "melting_point > 1000 + density < 5",
+        "correct": false,
+        "feedback": "This doesn't do what we want - + here would try to add 1000 and density together before comparing. Use 'and' to combine two separate conditions."
+      }
+    ]
+  }
+]

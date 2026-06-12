@@ -1,0 +1,66 @@
+[
+  {
+    "question": "Which of the following is a string in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "42",
+        "correct": false,
+        "feedback": "Not quite - 42 without quotes is an integer (a whole number), not a string."
+      },
+      {
+        "answer": "\"Hello\"",
+        "correct": true,
+        "feedback": "Correct! Anything wrapped in quotes is a string - Python treats it as text, not a number or instruction."
+      },
+      {
+        "answer": "3.14",
+        "correct": false,
+        "feedback": "Not quite - 3.14 without quotes is a float (a decimal number), not a string."
+      },
+      {
+        "answer": "True",
+        "correct": false,
+        "feedback": "Not quite - True is a boolean (a yes/no value), not a string. \"True\" in quotes would be a string though!"
+      }
+    ]
+  },
+  {
+    "question": "In Python, what does len(\"Materials\") return?",
+    "type": "numeric",
+    "answers": [
+      {
+        "type": "value",
+        "value": 9,
+        "correct": true,
+        "feedback": "Correct! len() counts every character including spaces. \"Materials\" has 9 characters."
+      }
+    ]
+  },
+  {
+    "question": "You have the string material = \"Gold\". What does material[::-1] give you?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "\"Gold\"",
+        "correct": false,
+        "feedback": "That's the original - [::-1] tells Python to step through the string backwards."
+      },
+      {
+        "answer": "\"dloG\"",
+        "correct": true,
+        "feedback": "Correct! [::-1] reverses the string - it reads every character from the last to the first."
+      },
+      {
+        "answer": "\"G\"",
+        "correct": false,
+        "feedback": "That would be material[0] - just the first character."
+      },
+      {
+        "answer": "An error",
+        "correct": false,
+        "feedback": "No error here - [::-1] is valid Python slicing syntax and works on any string."
+      }
+    ]
+  }
+]

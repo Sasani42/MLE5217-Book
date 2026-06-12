@@ -1,0 +1,10 @@
+# Authoring / build dependencies. Install these inside a Python virtual environment.
+# (Jupyter Book 2 also needs Node.js >= 20 on your machine — see README.)
+
+jupyter-book>=2     # the book builder (a thin wrapper around the MyST engine)
+jupyterlab          # to open and run the notebooks while authoring
+jupyterquiz         # interactive self-check multiple-choice questions
+numpy
+pandas
+matplotlib
+sklearn

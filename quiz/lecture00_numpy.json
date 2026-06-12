@@ -1,0 +1,136 @@
+[
+  {
+    "question": "What is the key advantage of a NumPy array over a regular Python list for numerical data?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "NumPy arrays can store more items than a list",
+        "correct": false,
+        "feedback": "Not quite - both can store large amounts of data. The real advantage is about speed and how operations are applied."
+      },
+      {
+        "answer": "NumPy arrays perform mathematical operations on all elements at once, much faster than looping through a list",
+        "correct": true,
+        "feedback": "Correct! This is called vectorisation - instead of looping through each element, NumPy applies the operation to the whole array in one shot using optimised low-level code. For large materials datasets this difference in speed is enormous."
+      },
+      {
+        "answer": "NumPy arrays can store different data types in the same array",
+        "correct": false,
+        "feedback": "Actually the opposite is true - NumPy arrays require all elements to be the same data type. It's Python lists that can mix types."
+      },
+      {
+        "answer": "NumPy arrays are easier to read and write than lists",
+        "correct": false,
+        "feedback": "Syntax-wise they're quite similar. The real advantage is computational speed and built-in mathematical operations."
+      }
+    ]
+  },
+  {
+    "question": "What does this code output?",
+    "code": "import numpy as np\n\nbandgaps = np.array([0.67, 1.12, 1.42, 3.37, 5.47])\nprint(bandgaps * 1000)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "[670. 1120. 1420. 3370. 5470.]",
+        "correct": true,
+        "feedback": "Correct! NumPy broadcasts the multiplication across every element automatically - no loop needed. The decimal points indicate these are floats. This kind of unit conversion (eV to meV here) is a very common one-liner in materials data work."
+      },
+      {
+        "answer": "An error - you can't multiply an array by a number",
+        "correct": false,
+        "feedback": "No error - this is one of NumPy's most useful features. Multiplying an array by a scalar applies the operation to every element."
+      },
+      {
+        "answer": "The array repeated 1000 times",
+        "correct": false,
+        "feedback": "That's what would happen with a Python list! list * 1000 repeats the list. NumPy arrays behave differently - multiplication is always mathematical."
+      },
+      {
+        "answer": "670.0",
+        "correct": false,
+        "feedback": "That's only the first element scaled. NumPy applies the operation to the entire array, not just the first item."
+      }
+    ]
+  },
+  {
+    "question": "What does this code output?",
+    "code": "import numpy as np\n\ndensities = np.array([2.33, 8.96, 19.32, 7.87, 10.49])\nprint(densities[densities > 10])",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "[19.32 10.49]",
+        "correct": true,
+        "feedback": "Correct! This is boolean masking - 'densities > 10' creates a True/False array, which is then used to filter the original. Only values where the condition is True are returned. You'll use this constantly when filtering materials by a property threshold."
+      },
+      {
+        "answer": "[2.33, 8.96, 19.32, 7.87, 10.49]",
+        "correct": false,
+        "feedback": "That's the full array. The condition 'densities > 10' filters it down to only the values above 10."
+      },
+      {
+        "answer": "[ True  True  True  True  True]",
+        "correct": false,
+        "feedback": "That would be the output of just 'print(densities > 10)' on its own - a boolean array. Using it inside the square brackets applies it as a filter."
+      },
+      {
+        "answer": "An error - you can't use a condition inside square brackets",
+        "correct": false,
+        "feedback": "This is perfectly valid NumPy - it's called boolean indexing or boolean masking, and it's one of the most powerful and commonly used features in data analysis."
+      }
+    ]
+  },
+  {
+    "question": "What is the shape of the array produced by this code?",
+    "code": "import numpy as np\n\nproperties = np.array([\n    [1.12, 2.33, 1414],\n    [0.67, 5.32, 938],\n    [1.42, 8.96, 1357]\n])\n\nprint(properties.shape)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "(9,)",
+        "correct": false,
+        "feedback": "That would be the shape of a 1D array with 9 elements. This array has rows and columns, so it's 2-dimensional."
+      },
+      {
+        "answer": "(3, 3)",
+        "correct": true,
+        "feedback": "Correct! .shape returns (rows, columns). This is a 3x3 array - 3 materials, each with 3 properties (bandgap, density, melting point). In machine learning, rows are typically samples and columns are features - so you're already looking at a tiny feature matrix!"
+      },
+      {
+        "answer": "(3,)",
+        "correct": false,
+        "feedback": "That would be the shape of a 1D array with 3 elements. This array has 3 rows AND 3 columns, so its shape is (3, 3)."
+      },
+      {
+        "answer": "(2, 3)",
+        "correct": false,
+        "feedback": "Not quite - count the rows (3 materials) and columns (3 properties each). The shape is (3, 3)."
+      }
+    ]
+  },
+  {
+    "question": "Which line of code extracts only the density column (the second column) from this 2D array?",
+    "code": "import numpy as np\n\nproperties = np.array([\n    [1.12, 2.33, 1414],\n    [0.67, 5.32, 938],\n    [1.42, 8.96, 1357]\n])\n\n# bandgap = col 0, density = col 1, melting point = col 2",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "properties[1]",
+        "correct": false,
+        "feedback": "properties[1] gives you the entire second ROW (all properties of the second material), not the second column."
+      },
+      {
+        "answer": "properties[:, 1]",
+        "correct": true,
+        "feedback": "Correct! The colon ':' means 'all rows', and '1' selects column index 1. Reading it aloud: 'give me all rows, column 1'. This slice notation is fundamental to working with 2D arrays and DataFrames in pandas — you'll use it constantly."
+      },
+      {
+        "answer": "properties[1, :]",
+        "correct": false,
+        "feedback": "Close! This gives you all columns of row 1 - the full second row. To get a column, you need the colon in the row position: properties[:, 1]."
+      },
+      {
+        "answer": "properties[: ,0]",
+        "correct": false,
+        "feedback": "Almost right syntax, but index 0 is the bandgap column, not density. Density is at index 1."
+      }
+    ]
+  }
+]

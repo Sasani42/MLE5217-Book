@@ -1,0 +1,44 @@
+[
+  {
+    "question": "Our band-gap dataset includes SiO2 at 8.9 eV, far above the others. Which summary value is pulled upward the most by this single outlier?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "The mean",
+        "correct": true,
+        "feedback": "Correct — the mean adds in every value, so one very large number drags it upward."
+      },
+      {
+        "answer": "The median",
+        "correct": false,
+        "feedback": "Not quite — the median is the middle value, so it barely moves when a single point is extreme."
+      },
+      {
+        "answer": "The mode",
+        "correct": false,
+        "feedback": "Not quite — the mode is the most frequent value and ignores how large the outlier is."
+      }
+    ]
+  },
+  {
+    "question": "A set of materials has a SMALL standard deviation in density. What does that tell you?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "The densities are clustered close together.",
+        "correct": true,
+        "feedback": "Correct — a small spread means the values sit near the mean."
+      },
+      {
+        "answer": "The densities are spread far apart.",
+        "correct": false,
+        "feedback": "That would be a large standard deviation."
+      },
+      {
+        "answer": "The average density is small.",
+        "correct": false,
+        "feedback": "Standard deviation measures spread, not the size of the average."
+      }
+    ]
+  }
+]

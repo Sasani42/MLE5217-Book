@@ -1,0 +1,135 @@
+[
+  {
+    "question": "Which of the following correctly defines a function in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "function calculate_density(mass, volume):",
+        "correct": false,
+        "feedback": "Not quite - Python uses the keyword 'def', not 'function'. That syntax is from other languages like JavaScript."
+      },
+      {
+        "answer": "def calculate_density(mass, volume):",
+        "correct": true,
+        "feedback": "Correct! 'def' is the keyword Python uses to define a function, followed by the name and its inputs (parameters) in brackets."
+      },
+      {
+        "answer": "define calculate_density(mass, volume):",
+        "correct": false,
+        "feedback": "Close! But the keyword is 'def', not 'define'. Python likes to keep things short."
+      },
+      {
+        "answer": "def calculate_density[mass, volume]:",
+        "correct": false,
+        "feedback": "Almost - but function parameters go in round brackets (), not square brackets []. Square brackets are for lists."
+      }
+    ]
+  },
+  {
+    "question": "What does this function return?",
+    "code": "def classify_material(bandgap):\n    if bandgap < 0.1:\n        return \"conductor\"\n    elif bandgap < 3.0:\n        return \"semiconductor\"\n    else:\n        return \"insulator\"\n\nresult = classify_material(1.12)\nprint(result)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "\"conductor\"",
+        "correct": false,
+        "feedback": "Not quite - 1.12 is not less than 0.1, so the first condition fails."
+      },
+      {
+        "answer": "\"semiconductor\"",
+        "correct": true,
+        "feedback": "Correct! 1.12 is not less than 0.1, but it is less than 3.0, so the function returns \"semiconductor\". This is actually the bandgap of Silicon!"
+      },
+      {
+        "answer": "\"insulator\"",
+        "correct": false,
+        "feedback": "Not quite - 1.12 is less than 3.0, so it doesn't reach the else branch."
+      },
+      {
+        "answer": "Nothing - the function doesn't print anything",
+        "correct": false,
+        "feedback": "The function itself doesn't print, but the last line calls print() on the returned result, so something does appear on screen."
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between a parameter and an argument in a Python function?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "They are the same thing, just different words for it",
+        "correct": false,
+        "feedback": "They're related but not the same. The distinction is about when you're defining the function vs when you're calling it."
+      },
+      {
+        "answer": "A parameter is the variable in the function definition; an argument is the actual value you pass in when calling it",
+        "correct": true,
+        "feedback": "Correct! For example in def calculate_density(mass, volume), 'mass' and 'volume' are parameters. When you call calculate_density(10, 2), the values 10 and 2 are the arguments."
+      },
+      {
+        "answer": "Parameters are for numbers; arguments are for strings",
+        "correct": false,
+        "feedback": "Not quite - both parameters and arguments can be any data type. The distinction is about definition vs calling."
+      },
+      {
+        "answer": "Arguments are defined inside the function; parameters are passed in from outside",
+        "correct": false,
+        "feedback": "It's actually the other way around - parameters are in the definition, arguments are the values passed in from outside when calling."
+      }
+    ]
+  },
+  {
+    "question": "What will this code output?",
+    "code": "def add_dopant(material, dopant=\"Carbon\"):\n    return material + \" doped with \" + dopant\n\nprint(add_dopant(\"Silicon\"))\nprint(add_dopant(\"Germanium\", \"Boron\"))",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Silicon doped with Carbon\nGermanium doped with Boron",
+        "correct": true,
+        "feedback": "Correct! \"Carbon\" is a default argument — it's used automatically if no dopant is specified. When \"Boron\" is passed in, it overrides the default."
+      },
+      {
+        "answer": "Silicon doped with Carbon\nGermanium doped with Carbon",
+        "correct": false,
+        "feedback": "The second call passes \"Boron\" explicitly, which overrides the default value of \"Carbon\"."
+      },
+      {
+        "answer": "An error — you must always provide both arguments",
+        "correct": false,
+        "feedback": "No error! Default arguments make a parameter optional. If you don't pass a value, Python uses the default instead."
+      },
+      {
+        "answer": "Silicon\nGermanium doped with Boron",
+        "correct": false,
+        "feedback": "The first call still uses the default dopant \"Carbon\", so the full string \"Silicon doped with Carbon\" is returned and printed."
+      }
+    ]
+  },
+  {
+    "question": "A function has been defined but the last line is missing. What should replace the blank to return the correct result?",
+    "code": "def celsius_to_kelvin(temp_list):\n    kelvin_list = []\n    for temp in temp_list:\n        kelvin_list.append(temp + 273.15)\n    ___________",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "return kelvin_list",
+        "correct": true,
+        "feedback": "Correct! Without a return statement, the function does all the work but throws the result away. 'return kelvin_list' hands the finished list back to whoever called the function."
+      },
+      {
+        "answer": "print(kelvin_list)",
+        "correct": false,
+        "feedback": "print() would display the result on screen, but it doesn't send the value back to the caller. If you later tried to store the output (e.g. result = celsius_to_kelvin(...)), result would be None."
+      },
+      {
+        "answer": "yield kelvin_list",
+        "correct": false,
+        "feedback": "yield is used for generators - a more advanced concept. For a straightforward function like this, return is what you need."
+      },
+      {
+        "answer": "Nothing - the function is already complete",
+        "correct": false,
+        "feedback": "Without a return statement, the function silently returns None. All the hard work building kelvin_list would be lost!"
+      }
+    ]
+  }
+]

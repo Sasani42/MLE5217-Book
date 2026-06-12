@@ -1,0 +1,104 @@
+[
+  {
+    "question": "Which of the following correctly creates a list of materials in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "materials = (\"Gold\", \"Silver\", \"Copper\")",
+        "correct": false,
+        "feedback": "Close! But round brackets () create a tuple, not a list. Tuples are similar but cannot be changed after creation."
+      },
+      {
+        "answer": "materials = [\"Gold\", \"Silver\", \"Copper\"]",
+        "correct": true,
+        "feedback": "Correct! Square brackets [] are how you define a list in Python. Lists can hold any mix of data types and can be changed after creation."
+      },
+      {
+        "answer": "materials = {\"Gold\", \"Silver\", \"Copper\"}",
+        "correct": false,
+        "feedback": "Not quite - curly brackets {} create a set (or a dictionary). Sets don't keep items in order and don't allow duplicates."
+      },
+      {
+        "answer": "materials = \"Gold\", \"Silver\", \"Copper\"",
+        "correct": false,
+        "feedback": "This actually creates a tuple, not a list - Python groups comma-separated values into a tuple by default when there are no brackets."
+      }
+    ]
+  },
+  {
+    "question": "You have the list:  \n\n elements = [\"H\", \"He\", \"Li\", \"Be\", \"B\"]  \n\n What does elements[2] return?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "\"He\"",
+        "correct": false,
+        "feedback": "Not quite - remember Python starts counting from 0. So index 2 is the third item, not the second."
+      },
+      {
+        "answer": "\"Li\"",
+        "correct": true,
+        "feedback": "Correct! Python indexing starts at 0, so elements[0] = H, elements[1] = He, elements[2] = Li."
+      },
+      {
+        "answer": "\"H\"",
+        "correct": false,
+        "feedback": "That would be elements[0] - Python starts counting from 0, not 1."
+      },
+      {
+        "answer": "\"Be\"",
+        "correct": false,
+        "feedback": "That would be elements[3]. Remember, counting starts from 0."
+      }
+    ]
+  },
+  {
+    "question": "You have the list:  \n\n metals = [\"Iron\", \"Copper\", \"Zinc\"]  \n\n After running metals.append(\"Nickel\"), what does len(metals) return?",
+    "type": "numeric",
+    "answers": [
+      {
+        "type": "value",
+        "value": 4,
+        "correct": true,
+        "feedback": "Correct! .append() adds one item to the end of the list, so the list grows from 3 to 4 items."
+      }
+    ]
+  },
+  {
+    "question": "What is the key difference between .append() and .extend() in Python?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": ".append() adds a single item; .extend() adds all items from another list individually",
+        "correct": true,
+        "feedback": "Correct! For example, if you .append() a list of 3 items, you get one new item that is itself a list. If you .extend() with the same list, you get 3 new individual items added."
+      },
+      {
+        "answer": ".append() is faster; .extend() is slower",
+        "correct": false,
+        "feedback": "Speed isn't the difference here - they do fundamentally different things. .append() adds one item; .extend() unpacks and adds multiple items."
+      },
+      {
+        "answer": ".append() works on strings; .extend() works on numbers",
+        "correct": false,
+        "feedback": "Both methods work on any data type. The difference is how many items they add, not what type of items."
+      },
+      {
+        "answer": "They do the same thing",
+        "correct": false,
+        "feedback": "They look similar but behave differently. Try: a = [1,2,3]; a.append([4,5]) vs a.extend([4,5]) and compare the results!"
+      }
+    ]
+  },
+  {
+    "question": "You have a list of measured bandgaps:  \n\n bandgaps = [1.12, 0.67, 3.37, 1.42, 5.47]  \n\n After running bandgaps.sort(), what is bandgaps[0]?",
+    "type": "numeric",
+    "answers": [
+      {
+        "type": "value",
+        "value": 0.67,
+        "correct": true,
+        "feedback": "Correct! .sort() rearranges the list in ascending order (smallest to largest) in place, so the smallest bandgap (0.67 eV — Germanium) moves to index 0."
+      }
+    ]
+  }
+]

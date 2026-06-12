@@ -1,0 +1,126 @@
+[
+  {
+    "question": "What will the following code print?",
+      "code":"for element in [\"Fe\", \"Cu\", \"Au\"]:  \n &nbsp;&nbsp;&nbsp;&nbsp; print(element)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Fe Cu Au (all on one line)",
+        "correct": false,
+        "feedback": "Not quite - each print() call starts a new line by default, so each element prints on its own line."
+      },
+      {
+        "answer": "Fe  \n Cu  \n Au (each on a new line)",
+        "correct": true,
+        "feedback": "Correct! The loop visits each item in the list one at a time and prints it on a new line."
+      },
+      {
+        "answer": "[\"Fe\", \"Cu\", \"Au\"]",
+        "correct": false,
+        "feedback": "That's what you'd get if you printed the whole list at once. The loop unpacks it item by item."
+      },
+      {
+        "answer": "element  \n element  \n element",
+        "correct": false,
+        "feedback": "Not quite - 'element' is a variable name. Python prints the value stored in it at each step, not the name itself."
+      }
+    ]
+  },
+  {
+    "question": "How many times will the following loop run?",
+    "code":"for i in range(5):  \n &nbsp;&nbsp;&nbsp;&nbsp; print(i)",
+    "type": "numeric",
+    "answers": [
+      {
+        "type": "value",
+        "value": 5,
+        "correct": true,
+        "feedback": "Correct! range(5) generates the numbers 0, 1, 2, 3, 4  that's 5 values, so the loop runs 5 times."
+      }
+    ]
+  },
+  {
+    "question": "You want to calculate the melting points in Kelvin for a list of values in Celsius. Which loop correctly does this?",  
+    "code":"celsius = [1085, 962, 1064, 420]",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "",
+        "code":"for temp in celsius:  \n kelvin = temp + 273.15  \n  print(kelvin)",
+        "correct": true,
+        "feedback": "Correct! The loop visits each temperature in the list, converts it by adding 273.15, and prints the result."
+      },
+      {
+        "answer": "",
+        "code":"for temp in celsius:  \n kelvin = celsius + 273.15  \n print(kelvin)",
+        "correct": false,
+        "feedback": "Almost! But 'celsius' here refers to the whole list, not the current item. Use 'temp' (the loop variable) to access each value one at a time."
+      },
+      {
+        "answer": "",
+        "code":"for celsius in temp:  \n kelvin = temp + 273.15  \n print(kelvin)",
+        "correct": false,
+        "feedback": "The loop variable and the list are swapped here. The syntax is 'for item in list', not 'for list in item'."
+      },
+      {
+        "answer": "",
+        "code":"while temp in celsius:  \n  kelvin = temp + 273.15  \n  print(kelvin)",
+        "correct": false,
+        "feedback": "This uses a while loop with incorrect syntax for iterating over a list. A for loop is the natural choice when you want to visit every item in a list."
+      }
+    ]
+  },
+  {
+    "question": "What does the following code do?",
+    "code": "bandgaps = [1.12, 0.67, 3.37, 1.42, 5.47]\nsemiconductors = []\n\nfor bg in bandgaps:\n    if bg < 3.0:\n        semiconductors.append(bg)",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Collects all bandgaps into the semiconductors list",
+        "correct": false,
+        "feedback": "Not all - only the ones that pass the condition. The if statement filters out any bandgap of 3.0 eV or above."
+      },
+      {
+        "answer": "Collects only bandgaps below 3.0 eV into the semiconductors list",
+        "correct": true,
+        "feedback": "Correct! This is a classic filter pattern - loop through a list, check a condition, and collect only the items that pass. Very useful in data processing."
+      },
+      {
+        "answer": "Sorts the bandgaps from smallest to largest",
+        "correct": false,
+        "feedback": "No sorting here - the loop checks each value against a threshold and keeps only the ones below 3.0 eV."
+      },
+      {
+        "answer": "Throws an error because semiconductors starts empty",
+        "correct": false,
+        "feedback": "Starting with an empty list and filling it inside a loop is perfectly valid Python - and a very common pattern!"
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between a for loop and a while loop?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "A for loop runs a fixed number of times; a while loop keeps running as long as a condition is True",
+        "correct": true,
+        "feedback": "Correct! Use a for loop when you know in advance how many times to repeat (e.g. for every item in a list). Use a while loop when you want to keep going until something changes."
+      },
+      {
+        "answer": "A for loop is faster than a while loop",
+        "correct": false,
+        "feedback": "Speed isn't the distinction - they're used for different situations. Choose based on what makes the logic clearest, not speed."
+      },
+      {
+        "answer": "A while loop can only be used with numbers",
+        "correct": false,
+        "feedback": "Not true - a while loop runs as long as any condition is True, regardless of data type."
+      },
+      {
+        "answer": "They do exactly the same thing, just written differently",
+        "correct": false,
+        "feedback": "They overlap in some cases, but they're designed for different situations. A for loop iterates over a sequence; a while loop waits for a condition to become False."
+      }
+    ]
+  }
+]

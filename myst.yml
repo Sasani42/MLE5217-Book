@@ -20,17 +20,17 @@ project:
         - file: week00-python.ipynb
         - file: week00-packages.ipynb
         - file: week00-errors.ipynb
-    - title: "Week 1 — Introduction to Machine Learning"
-      children:
-        - file: week01-lecture.ipynb
-        - file: week01-linear_algebra.ipynb        
-    - title: "Week 2 — Describing Data"
-      children:
-        - file: week02-preview.md
-        - file: week02-lecture.ipynb
-        - file: week02-worked_examples.md
-        - file: week02-worked_examples_2.md
-        - file: week02-sampling_techniques.md
+    #- title: "Week 1 — Introduction to Machine Learning"
+     # children:
+      #  - file: week01-lecture.ipynb
+       # - file: week01-linear_algebra.ipynb        
+    #- title: "Week 2 — Describing Data"
+     # children:
+      #  - file: week02-preview.md
+      #  - file: week02-lecture.ipynb
+      #  - file: week02-worked_examples.md
+      #  - file: week02-worked_examples_2.md
+      #  - file: week02-sampling_techniques.md
 site:
   template: book-theme
   # options:

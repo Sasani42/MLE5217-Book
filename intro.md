@@ -4,6 +4,8 @@ title: Welcome
 
 # MLE5217 — Foundations of Machine Learning for Materials Science
 
+Test test test!
+
 This is the course book for MLE5217 for the academic year 2026/27 Semester I. As you progress through the course new content will be added each week. 
 
 The main machine learning topics that we will be looking at are:

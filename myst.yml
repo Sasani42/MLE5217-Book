@@ -6,8 +6,6 @@ version: 1
 
 project:
   title: "MLE5217 — Foundations of Machine Learning for Materials Science"
-  github: Sasani42/MLE5217-Book
-  jupyter: true
   # An 'id' is optional. Running `jupyter book init` can generate one for you.
   # authors:
     # - name: "Unga Banga"        # <- change to your name

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Least squares — watching the residuals shrink</title>
+<style>
+  :root {
+    --paper:        #f4f6f8;
+    --panel:        #ffffff;
+    --ink:          #1a2230;
+    --ink-soft:     #5a6472;
+    --hair:         #c9d0d9;
+    --grid:         #e3e8ee;
+    --steel:        #2a6f97;   /* data points */
+    --steel-fill:   #2a6f97;
+    --line:         #e4572e;   /* the movable fitted line */
+    --resid:        #c65a3a;   /* residual segments */
+    --square:       rgba(228, 87, 46, 0.16); /* squared-residual fill */
+    --square-edge:  rgba(228, 87, 46, 0.42);
+    --good:         #2e7d57;   /* best-fit / success */
+    --good-soft:    rgba(46, 125, 87, 0.12);
+    --shadow:       0 1px 2px rgba(26,34,48,.06), 0 8px 24px rgba(26,34,48,.06);
+    --mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 28px 20px 44px;
+  }
+
+  .wrap { max-width: 940px; margin: 0 auto; }
+
+  header.head { margin-bottom: 18px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-size: clamp(22px, 3.4vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    font-weight: 650;
+  }
+  .lede { color: var(--ink-soft); max-width: 62ch; margin: 0; font-size: 15px; }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 22px;
+  }
+  @media (min-width: 860px) {
+    .stage { grid-template-columns: minmax(0, 1.55fr) minmax(230px, 1fr); align-items: stretch; }
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+  .plot-card { padding: 10px 12px 4px; }
+  svg { display: block; width: 100%; height: auto; }
+
+  /* readout panel */
+  .readout { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 16px; }
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 0 0 4px;
+  }
+  .ssr-value {
+    font-family: var(--mono);
+    font-size: clamp(30px, 6vw, 40px);
+    font-weight: 600; line-height: 1;
+    color: var(--line);
+    font-variant-numeric: tabular-nums;
+    transition: color .25s ease;
+  }
+  .ssr-value.is-best { color: var(--good); }
+  .ssr-sub { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); margin-top: 6px; }
+  .ssr-sub b { color: var(--ink); font-weight: 600; }
+
+  .bar-track {
+    position: relative; height: 12px; border-radius: 6px;
+    background: var(--grid); overflow: hidden; margin-top: 10px;
+  }
+  .bar-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--line); border-radius: 6px;
+    transition: color .25s ease;
+  }
+  .bar-fill.is-best { background: var(--good); }
+  .bar-min {
+    position: absolute; top: -3px; bottom: -3px; width: 2px;
+    background: var(--good);
+  }
+  .bar-caption { display:flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); margin-top: 6px; }
+
+  .eqn {
+    font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums;
+    background: var(--paper); border: 1px solid var(--hair); border-radius: 9px;
+    padding: 10px 12px; color: var(--ink);
+  }
+  .eqn .k { color: var(--line); }
+  .eqn.best-eqn .k { color: var(--good); }
+  .eqn-label { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); font-family: var(--mono); display:block; margin-bottom: 5px; }
+
+  /* controls */
+  .controls { margin-top: 16px; padding: 16px 16px 18px; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  button {
+    font-family: var(--sans); font-size: 13.5px; font-weight: 550;
+    color: var(--ink); background: var(--panel);
+    border: 1px solid var(--hair); border-radius: 9px;
+    padding: 8px 14px; cursor: pointer;
+    transition: border-color .15s, background .15s, transform .05s;
+  }
+  button:hover { border-color: var(--steel); }
+  button:active { transform: translateY(1px); }
+  button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  button.primary:hover { background: #26303f; }
+  button:focus-visible, input:focus-visible, .toggle:focus-within {
+    outline: 2px solid var(--steel); outline-offset: 2px;
+  }
+
+  .sliders { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 560px) { .sliders { grid-template-columns: 1fr 1fr; } }
+  .slider-group label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .slider-group label .val { color: var(--ink); font-size: 13px; font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--line); cursor: pointer; }
+
+  .toggles { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--grid); }
+  .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+  .toggle input { width: 16px; height: 16px; accent-color: var(--steel); cursor: pointer; }
+
+  footer.note {
+    margin-top: 22px; font-size: 12.5px; color: var(--ink-soft);
+    border-top: 1px solid var(--grid); padding-top: 14px; line-height: 1.6;
+  }
+  footer.note code { font-family: var(--mono); background: var(--panel); border: 1px solid var(--hair); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px 18px; padding: 4px 4px 12px; font-size: 12.5px; color: var(--ink-soft); font-family: var(--mono); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
+  .swatch.dot { width: 11px; height: 11px; border-radius: 50%; }
+  .swatch.dash { background: repeating-linear-gradient(90deg, var(--resid) 0 4px, transparent 4px 7px); height: 2px; }
+  .swatch.sq { width: 12px; height: 12px; border-radius: 2px; background: var(--square); border: 1px solid var(--square-edge); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <p class="eyebrow">Ordinary least squares · residuals</p>
+    <h1>Watching the residuals shrink</h1>
+    <p class="lede">
+      A line sweeps through the Vickers-hardness data. The dashed vertical lines mark each residual - the
+      gap between a measured point and the line. As the line drifts away from the data, the
+      residuals stretch; as it settles into the best fit, they collapse. The number that the fit
+      minimises is the <em>sum of squared residuals</em>, shown at right.
+    </p>
+  </header>
+
+  <div class="stage">
+    <div class="card plot-card">
+      <div class="legend">
+        <span><i class="swatch dot" style="background:var(--steel)"></i> data point</span>
+        <span><i class="swatch" style="background:var(--line)"></i> fitted line</span>
+        <span><i class="swatch dash"></i> residual</span>
+        <span><i class="swatch sq"></i> squared residual</span>
+      </div>
+      <svg id="plot" viewBox="0 0 720 460" role="img"
+           aria-label="Scatter plot of Vickers hardness against a predictor, with a movable fitted line and residual segments.">
+        <defs>
+          <clipPath id="plotClip"><rect id="clipRect" x="0" y="0" width="0" height="0"/></clipPath>
+        </defs>
+        <g id="gridLayer"></g>
+        <g id="axisLayer"></g>
+        <g id="fitClip" clip-path="url(#plotClip)">
+          <g id="squareLayer"></g>
+          <g id="residLayer"></g>
+          <line id="fitLine" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <g id="pointLayer"></g>
+        <text id="bestTag" x="0" y="0" font-family="var(--mono)" font-size="12"
+              fill="var(--good)" opacity="0" font-weight="600">≈ best fit</text>
+        <text id="xTitle" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink-soft)"></text>
+        <text id="yTitle" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink-soft)"></text>
+      </svg>
+    </div>
+
+    <div class="card readout">
+      <div>
+        <p class="metric-label">Sum of squared residuals</p>
+        <div id="ssrValue" class="ssr-value">—</div>
+        <div class="bar-track">
+          <div id="barFill" class="bar-fill" style="width:0%"></div>
+          <div id="barMin" class="bar-min" style="left:0%"></div>
+        </div>
+        <div class="bar-caption"><span>0</span><span id="barMaxLabel">max</span></div>
+        <div id="ssrSub" class="ssr-sub"></div>
+      </div>
+
+      <div>
+        <span class="eqn-label">Current line</span>
+        <div id="eqnNow" class="eqn">HV = <span class="k">—</span> · x + <span class="k">—</span></div>
+      </div>
+      <div>
+        <span class="eqn-label">Least-squares line</span>
+        <div id="eqnBest" class="eqn best-eqn">HV = <span class="k">—</span> · x + <span class="k">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card controls">
+    <div class="btn-row">
+      <button id="playBtn" class="primary">Pause sweep</button>
+      <button id="snapBtn">Snap to best fit</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+    <div class="sliders">
+      <div class="slider-group">
+        <label for="mSlider">Slope (m) <span class="val" id="mVal">—</span></label>
+        <input type="range" id="mSlider" />
+      </div>
+      <div class="slider-group">
+        <label for="bSlider">Intercept (b) <span class="val" id="bVal">—</span></label>
+        <input type="range" id="bSlider" />
+      </div>
+    </div>
+    <div class="toggles">
+      <label class="toggle"><input type="checkbox" id="tResid" checked/> Residual lines</label>
+      <label class="toggle"><input type="checkbox" id="tSquares"/> Residual squares</label>
+      <label class="toggle"><input type="checkbox" id="tBestLine"/> Show best-fit line</label>
+    </div>
+  </div>
+
+  <footer class="note">
+    <strong>About the data.</strong> These are <em>illustrative synthetic</em> Vickers-hardness values, not measured
+    data </footer>
+</div>
+
+<script>
+/* ============================================================================
+   EDIT HERE — drop in your real Vickers-hardness data and axis labels.
+   x = predictor (e.g. %cold work, grain size term, load…); y = hardness (HV).
+   ========================================================================== */
+const DATA = [
+  { x: 1,  y: 118 }, { x: 2,  y: 135 }, { x: 3,  y: 142 }, { x: 4,  y: 168 },
+  { x: 5,  y: 175 }, { x: 6,  y: 198 }, { x: 7,  y: 205 }, { x: 8,  y: 232 },
+  { x: 9,  y: 240 }, { x: 10, y: 262 }
+];
+const X_LABEL = "x  (predictor)";
+const Y_LABEL = "Vickers hardness, HV";
+/* ========================================================================== */
+
+// ---- geometry ----
+const W = 720, H = 460;
+const M = { top: 26, right: 22, bottom: 54, left: 68 };
+const IW = W - M.left - M.right;   // inner width
+const IH = H - M.top - M.bottom;   // inner height
+const innerL = M.left, innerR = M.left + IW, innerT = M.top, innerB = M.top + IH;
+
+// ---- domains (padded, with headroom for the swinging line) ----
+const xs = DATA.map(d => d.x), ys = DATA.map(d => d.y);
+const xMin = Math.min(...xs), xMax = Math.max(...xs);
+const yMin = Math.min(...ys), yMax = Math.max(...ys);
+const xPad = (xMax - xMin) * 0.06 || 1;
+const yPad = (yMax - yMin) * 0.55 || 20;          // generous so the line stays visible
+const dX0 = xMin - xPad, dX1 = xMax + xPad;
+const dY0 = yMin - yPad, dY1 = yMax + yPad;
+
+const sx = x => innerL + (x - dX0) / (dX1 - dX0) * IW;
+const sy = y => innerT + (1 - (y - dY0) / (dY1 - dY0)) * IH;
+
+// ---- least-squares fit (closed form) ----
+const n = DATA.length;
+const sumX = xs.reduce((a,b)=>a+b,0), sumY = ys.reduce((a,b)=>a+b,0);
+const sumXX = xs.reduce((a,x)=>a+x*x,0);
+const sumXY = DATA.reduce((a,d)=>a+d.x*d.y,0);
+const mBest = (n*sumXY - sumX*sumY) / (n*sumXX - sumX*sumX);
+const bBest = (sumY - mBest*sumX) / n;
+
+const ssrOf = (m,b) => DATA.reduce((a,d)=>{ const r = d.y - (m*d.x + b); return a + r*r; }, 0);
+const minSSR = ssrOf(mBest, bBest);
+
+// ---- sweep amplitudes & a reference "worst" SSR for the bar scale ----
+const ampM = (dY1 - dY0) / (dX1 - dX0) * 0.28;     // slope wobble, scaled to the axes
+const ampB = (yMax - yMin) * 0.42;                 // intercept wobble
+const refSSR = Math.max(
+  ssrOf(mBest + ampM, bBest + ampB),
+  ssrOf(mBest - ampM, bBest - ampB),
+  ssrOf(mBest + ampM, bBest - ampB)
+);
+
+// ---- SVG helpers ----
+const NS = "http://www.w3.org/2000/svg";
+const $ = id => document.getElementById(id);
+function el(tag, attrs){ const e = document.createElementNS(NS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+
+// clip rect for the fit layer
+$("clipRect").setAttribute("x", innerL);
+$("clipRect").setAttribute("y", innerT - 4);
+$("clipRect").setAttribute("width", IW);
+$("clipRect").setAttribute("height", IH + 8);
+
+// ---- static layers: grid, axes, ticks, points ----
+(function buildStatic(){
+  const grid = $("gridLayer"), axis = $("axisLayer"), pts = $("pointLayer");
+
+  // y grid + ticks (nice round steps)
+  const yStep = niceStep((dY1 - dY0) / 6);
+  for (let v = Math.ceil(dY0 / yStep) * yStep; v <= dY1; v += yStep) {
+    const y = sy(v);
+    grid.appendChild(el("line", { x1: innerL, y1: y, x2: innerR, y2: y, stroke: "var(--grid)", "stroke-width": 1 }));
+    const t = el("text", { x: innerL - 10, y: y + 4, "text-anchor": "end", "font-family": "var(--mono)", "font-size": 11, fill: "var(--ink-soft)" });
+    t.textContent = Math.round(v);
+    axis.appendChild(t);
+  }
+  // x grid + ticks
+  const xStep = niceStep((dX1 - dX0) / 8);
+  for (let v = Math.ceil(dX0 / xStep) * xStep; v <= dX1; v += xStep) {
+    const x = sx(v);
+    grid.appendChild(el("line", { x1: x, y1: innerT, x2: x, y2: innerB, stroke: "var(--grid)", "stroke-width": 1 }));
+    const t = el("text", { x: x, y: innerB + 20, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--ink-soft)" });
+    t.textContent = trimNum(v);
+    axis.appendChild(t);
+  }
+  // axis frame
+  axis.appendChild(el("line", { x1: innerL, y1: innerB, x2: innerR, y2: innerB, stroke: "var(--hair)", "stroke-width": 1.5 }));
+  axis.appendChild(el("line", { x1: innerL, y1: innerT, x2: innerL, y2: innerB, stroke: "var(--hair)", "stroke-width": 1.5 }));
+
+  // data points (drawn above residuals)
+  DATA.forEach(d => {
+    pts.appendChild(el("circle", { cx: sx(d.x), cy: sy(d.y), r: 5.5, fill: "var(--steel-fill)", stroke: "#fff", "stroke-width": 1.5 }));
+  });
+
+  // axis titles
+  const xt = $("xTitle"); xt.setAttribute("x", innerL + IW/2); xt.setAttribute("y", H - 12); xt.textContent = X_LABEL;
+  const yt = $("yTitle"); yt.setAttribute("x", 16); yt.setAttribute("y", innerT + IH/2);
+  yt.setAttribute("transform", `rotate(-90 16 ${innerT + IH/2})`); yt.textContent = Y_LABEL;
+})();
+
+function niceStep(raw){
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p;
+}
+function trimNum(v){ return Math.abs(v - Math.round(v)) < 1e-9 ? String(Math.round(v)) : v.toFixed(1); }
+
+// ---- dynamic residual + square elements (one per point) ----
+const residLayer = $("residLayer"), squareLayer = $("squareLayer");
+const residEls = DATA.map(() => {
+  const rl = el("line", { stroke: "var(--resid)", "stroke-width": 1.5, "stroke-dasharray": "4 3" });
+  residLayer.appendChild(rl);
+  const sq = el("rect", { fill: "var(--square)", stroke: "var(--square-edge)", "stroke-width": 1 });
+  squareLayer.appendChild(sq);
+  return { rl, sq };
+});
+const fitLine = $("fitLine");
+const bestTag = $("bestTag");
+
+// optional static best-fit reference line
+const bestRef = el("line", {
+  x1: sx(dX0), y1: sy(mBest*dX0 + bBest), x2: sx(dX1), y2: sy(mBest*dX1 + bBest),
+  stroke: "var(--good)", "stroke-width": 1.5, "stroke-dasharray": "6 4", opacity: 0
+});
+$("fitClip").insertBefore(bestRef, fitLine);
+
+// ---- render one configuration of the line ----
+function render(m, b){
+  // fitted line across the plot
+  const y0 = m*dX0 + b, y1 = m*dX1 + b;
+  fitLine.setAttribute("x1", sx(dX0)); fitLine.setAttribute("y1", sy(y0));
+  fitLine.setAttribute("x2", sx(dX1)); fitLine.setAttribute("y2", sy(y1));
+
+  const showResid = $("tResid").checked;
+  const showSq = $("tSquares").checked;
+
+  DATA.forEach((d, i) => {
+    const px = sx(d.x), pyPt = sy(d.y), pyLine = sy(m*d.x + b);
+    const { rl, sq } = residEls[i];
+
+    // residual segment
+    if (showResid){
+      rl.setAttribute("x1", px); rl.setAttribute("y1", pyPt);
+      rl.setAttribute("x2", px); rl.setAttribute("y2", pyLine);
+      rl.setAttribute("opacity", 1);
+    } else rl.setAttribute("opacity", 0);
+
+    // squared-residual box: side = residual length in pixels
+    if (showSq){
+      const side = Math.abs(pyLine - pyPt);
+      const top = Math.min(pyPt, pyLine);
+      let left = px;                                   // extend to the right by default
+      if (px + side > innerR) left = px - side;        // flip near the right edge
+      sq.setAttribute("x", left); sq.setAttribute("y", top);
+      sq.setAttribute("width", side); sq.setAttribute("height", side);
+      sq.setAttribute("opacity", 1);
+    } else sq.setAttribute("opacity", 0);
+  });
+
+  // readouts
+  const ssr = ssrOf(m, b);
+  const nearBest = ssr <= minSSR * 1.06;              // within 6% of the minimum
+  updateReadout(m, b, ssr, nearBest);
+}
+
+// ---- readout panel ----
+const ssrValue = $("ssrValue"), barFill = $("barFill"), barMin = $("barMin");
+const ssrSub = $("ssrSub"), eqnNow = $("eqnNow");
+(function initReadout(){
+  $("barMin").style.left = (minSSR / refSSR * 100) + "%";
+  $("barMaxLabel").textContent = Math.round(refSSR).toLocaleString();
+  eqnNowBest();
+  $("mVal") && null;
+})();
+function eqnNowBest(){
+  $("eqnBest").innerHTML = `HV = <span class="k">${mBest.toFixed(2)}</span> · x + <span class="k">${bBest.toFixed(1)}</span>`;
+}
+function updateReadout(m, b, ssr, nearBest){
+  ssrValue.textContent = Math.round(ssr).toLocaleString();
+  ssrValue.classList.toggle("is-best", nearBest);
+  barFill.classList.toggle("is-best", nearBest);
+  barFill.style.width = Math.min(100, ssr / refSSR * 100) + "%";
+
+  const pctAbove = ((ssr - minSSR) / minSSR) * 100;
+  ssrSub.innerHTML = nearBest
+    ? `at the minimum — <b>this is the least-squares line</b>`
+    : `minimum is <b>${Math.round(minSSR).toLocaleString()}</b> · currently <b>+${pctAbove.toFixed(0)}%</b> above it`;
+
+  eqnNow.innerHTML = `HV = <span class="k">${m.toFixed(2)}</span> · x + <span class="k">${b.toFixed(1)}</span>`;
+
+  // "≈ best fit" tag near the line's right end
+  const tagX = sx(dX1) - 84, tagY = sy(m*dX1 + b) - 8;
+  bestTag.setAttribute("x", tagX);
+  bestTag.setAttribute("y", Math.max(innerT + 12, Math.min(innerB - 4, tagY)));
+  bestTag.setAttribute("opacity", nearBest ? 1 : 0);
+}
+
+// ---- sliders ----
+const mSlider = $("mSlider"), bSlider = $("bSlider"), mValEl = $("mVal"), bValEl = $("bVal");
+mSlider.min = (mBest - ampM * 1.6).toFixed(3); mSlider.max = (mBest + ampM * 1.6).toFixed(3); mSlider.step = 0.01;
+bSlider.min = (bBest - ampB * 1.6).toFixed(1); bSlider.max = (bBest + ampB * 1.6).toFixed(1); bSlider.step = 0.5;
+
+function setSliders(m, b){
+  mSlider.value = m; bSlider.value = b;
+  mValEl.textContent = m.toFixed(2); bValEl.textContent = b.toFixed(1);
+}
+
+// ---- animation state ----
+const reduceMotion = window.matchMedia("(prefers-reduce-motion: reduce)").matches
+                  || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let playing = !reduceMotion;
+let t = 0, last = performance.now();
+let snap = null;                                   // {from, to, t0, dur} while snapping
+
+function sweepConfig(time){
+  // start slightly off the best fit (phase offsets), then wander through good/bad fits
+  const m = mBest + ampM * Math.sin(0.9 * time + 0.7);
+  const b = bBest + ampB * Math.sin(1.35 * time + 1.9);
+  return { m, b };
+}
+
+function frame(now){
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+
+  let m, b;
+  if (snap){
+    const k = Math.min(1, (now - snap.t0) / snap.dur);
+    const e = 1 - Math.pow(1 - k, 3);              // ease-out cubic
+    m = snap.from.m + (snap.to.m - snap.from.m) * e;
+    b = snap.from.b + (snap.to.b - snap.from.b) * e;
+    if (k >= 1) snap = null;
+    setSliders(m, b);
+  } else if (playing){
+    t += dt;
+    ({ m, b } = sweepConfig(t));
+    setSliders(m, b);
+  } else {
+    m = parseFloat(mSlider.value); b = parseFloat(bSlider.value);
+  }
+
+  render(m, b);
+  requestAnimationFrame(frame);
+}
+
+// ---- controls wiring ----
+const playBtn = $("playBtn");
+function setPlaying(on){
+  playing = on;
+  playBtn.textContent = on ? "Pause sweep" : "Play sweep";
+  playBtn.classList.toggle("primary", !on ? false : true);
+}
+playBtn.addEventListener("click", () => setPlaying(!playing));
+
+$("snapBtn").addEventListener("click", () => {
+  setPlaying(false); snap = null;
+  const from = { m: parseFloat(mSlider.value), b: parseFloat(bSlider.value) };
+  snap = { from, to: { m: mBest, b: bBest }, t0: performance.now(), dur: 900 };
+});
+
+$("resetBtn").addEventListener("click", () => {
+  snap = null; t = 0; last = performance.now();
+  $("tSquares").checked = false; $("tResid").checked = true; $("tBestLine").checked = false;
+  bestRef.setAttribute("opacity", 0);
+  setPlaying(!reduceMotion);
+  if (reduceMotion){ const c = sweepConfig(0); setSliders(c.m, c.b); render(c.m, c.b); }
+});
+
+[mSlider, bSlider].forEach(s => s.addEventListener("input", () => {
+  setPlaying(false); snap = null;
+  mValEl.textContent = parseFloat(mSlider.value).toFixed(2);
+  bValEl.textContent = parseFloat(bSlider.value).toFixed(1);
+  render(parseFloat(mSlider.value), parseFloat(bSlider.value));
+}));
+
+["tResid", "tSquares"].forEach(id => $(id).addEventListener("change", () => {
+  render(parseFloat(mSlider.value), parseFloat(bSlider.value));
+}));
+$("tBestLine").addEventListener("change", e => bestRef.setAttribute("opacity", e.target.checked ? 1 : 0));
+
+// ---- boot ----
+(function boot(){
+  const c = sweepConfig(0);
+  setSliders(c.m, c.b);
+  render(c.m, c.b);
+  setPlaying(!reduceMotion);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

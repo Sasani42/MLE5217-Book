@@ -20,9 +20,10 @@ shape of data through *distributions*, and how we gain an understanding of data 
 - *Distributions*, how is our data distributed - and why we like to focus on the **normal** (“bell”) shape.
 - *Sampling* - how the data we have relates to the data we don't.
 
+:::{admonition} 📢 Words to listen for
+:class: note
 
-**👂Words to listen for** (we will use these again in later weeks, so they
-should start to feel familiar):
+**	The following terms will come up frequently in the next few lectures. You don't need to memorise them now — just be aware that they exist:
 
 - **line of best fit** - first glimpse this week, hidden inside the normal
   distribution formula; we formalise it in Week 3.
@@ -34,7 +35,7 @@ should start to feel familiar):
   we need to say how confident we are in a number.
 - **correlation** - the degree of agreement between two variables; from Week 3
   onwards.
-
+:::
 
 **🐍 Python**
 

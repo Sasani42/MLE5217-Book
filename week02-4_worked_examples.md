@@ -17,21 +17,21 @@ This is one of the most important questions in all of statistics - and the answe
 
 ---
 
-## 1. The claim
+## 1. The claim 
 
 ```{admonition} The Central Limit Theorem (in plain English)
 :class: important
-Take any population - it can have any shape at all (skewed, lumpy, discrete, ugly). Repeatedly draw samples of size $n$ from it and compute the **mean** of each sample.
+Take any population - it can have any shape at all (skewed, lumpy, discrete, ugly). Repeatedly draw samples of size n from it and compute the **mean** of each sample.
 
-As $n$ grows, the distribution of those **sample means** looks more and more like a **bell curve** (a normal distribution) - *regardless of what the original population looked like*.
+As n grows, the distribution of those **sample means** looks more and more like a **bell curve** (a normal distribution) - *regardless of what the original population looked like*.
 
-Specifically, the sample means cluster around the true population mean $\mu$, with a spread that **shrinks** as $n$ grows:
+Specifically, the sample means cluster around the true population mean μ, with a spread that **shrinks** as n grows:
 
 $$
 \text{spread of sample means} \;=\; \frac{\sigma}{\sqrt{n}}
 $$
 
-where $\sigma$ is the population standard deviation.
+where σ is the population standard deviation.
 ```
 
 Two pieces here deserve emphasis:
@@ -53,13 +53,13 @@ For this example we'll work with a population where the **true population mean i
 :class: note
 We are going to run a thought experiment. We will pretend to repeat the following procedure many thousands of times:
 
-> *"Draw $n$ failure times from the population, compute their sample mean $\bar{x}$, write it down."*
+> *"Draw n failure times from the population, compute their sample mean x¯, write it down."*
 
-This gives us a whole collection of sample means. According to the CLT, that collection should look more and more like a bell curve as $n$ grows, centred at $\mu = 5$, with spread $\sigma/\sqrt{n} = 5/\sqrt{n}$.
+This gives us a whole collection of sample means. According to the CLT, that collection should look more and more like a bell curve as n grows, centred at μ=5, with spread σ/n=5/n.
 
-**Before looking at the figure**, fill in this prediction table using $\sigma/\sqrt{n}$:
+**Before looking at the figure**, fill in this prediction table using σ/n:
 
-| Sample size $n$ | Predicted centre of the bell | Predicted spread $\sigma/\sqrt{n}$ |
+| Sample size n | Predicted centre of the bell | Predicted spread σ/n |
 |---|---|---|
 | 1   | ? | ? |
 | 2   | ? | ? |
@@ -70,16 +70,16 @@ This gives us a whole collection of sample means. According to the CLT, that col
 ```{admonition} Show solution
 :class: dropdown
 
-The centre is **always $\mu = 5$ hours**, no matter what $n$ is. Only the spread changes:
+The centre is **always μ=5 hours**, no matter what n is. Only the spread changes:
 
-| Sample size $n$ | Centre | Spread $\sigma/\sqrt{n} = 5/\sqrt{n}$ |
+| Sample size n | Centre | Spread σ/n=5/n |
 |---|---|---|
-| 1   | 5 | $5/\sqrt{1} = 5.00$ |
-| 2   | 5 | $5/\sqrt{2} \approx 3.54$ |
-| 5   | 5 | $5/\sqrt{5} \approx 2.24$ |
-| 30  | 5 | $5/\sqrt{30} \approx 0.91$ |
+| 1   | 5 | 5/1=5.00 |
+| 2   | 5 | 5/2≈3.54 |
+| 5   | 5 | 5/5≈2.24 |
+| 30  | 5 | 5/30≈0.91 |
 
-So the CLT predicts: as $n$ grows from 1 to 30, the cloud of sample means stays centred on 5 hours but **tightens** from a spread of 5 hours down to about 0.91 hours. That's a factor of roughly $\sqrt{30} \approx 5.5\times$ tighter.
+So the CLT predicts: as n grows from 1 to 30, the cloud of sample means stays centred on 5 hours but **tightens** from a spread of 5 hours down to about 0.91 hours. That's a factor of roughly 30≈5.5× tighter.
 ```
 
 ---
@@ -107,9 +107,9 @@ Look carefully at each panel:
 
 ```{admonition} Verifying the prediction numerically
 :class: tip
-Comparing what we *predicted* with $\sigma/\sqrt{n}$ to what the simulation *actually produced*:
+Comparing what we *predicted* with σ/n to what the simulation *actually produced*:
 
-| $n$ | Predicted spread | Observed spread of sample means |
+| n | Predicted spread | Observed spread of sample means |
 |---|---|---|
 | 1  | 5.00 | 5.04 |
 | 2  | 3.54 | 3.54 |
@@ -123,13 +123,13 @@ The CLT formula is not approximate hand-waving - it nails the spread of the samp
 
 ## 4. The "n is large enough" rule of thumb
 
-A natural question: **how large does $n$ have to be** before the bell curve is a good approximation?
+A natural question: **how large does n have to be** before the bell curve is a good approximation?
 
 There is no exact answer - it depends on how non-normal the population is. A common rule of thumb you will see in textbooks is:
 
-> **If $n \geq 30$, the distribution of the sample mean is usually close enough to normal for practical purposes.**
+> **If n≥30, the distribution of the sample mean is usually close enough to normal for practical purposes.**
 
-This is a guideline, not a law. If the population is *already* roughly bell-shaped, much smaller $n$ is fine. If the population is *extremely* skewed or has heavy tails, you may need much more than 30. In our exponential example, $n=30$ already does a great job, as the figure shows.
+This is a guideline, not a law. If the population is *already* roughly bell-shaped, much smaller n is fine. If the population is *extremely* skewed or has heavy tails, you may need much more than 30. In our exponential example, n=30 already does a great job, as the figure shows.
 
 ---
 
@@ -145,7 +145,7 @@ This is the quantity that tells us *how uncertain our sample mean is as an estim
 
 ```{admonition} Problem
 :class: note
-You measure the failure times of $n = 25$ ceramic specimens and find a sample mean of $\bar{x} = 4.6$ hours. Assume the population standard deviation is known to be $\sigma = 5$ hours.
+You measure the failure times of n=25 ceramic specimens and find a sample mean of x¯=4.6 hours. Assume the population standard deviation is known to be σ=5 hours.
 
 What is the standard error of your sample mean?
 ```
@@ -157,20 +157,20 @@ $$
 \text{SE}(\bar{x}) = \frac{\sigma}{\sqrt{n}} = \frac{5}{\sqrt{25}} = \frac{5}{5} = 1 \ \text{hour}
 $$
 
-So although our best estimate of the population mean is 4.6 hours, we know that this estimate has a typical uncertainty of about **1 hour**. Because the CLT tells us $\bar{x}$ is approximately normally distributed around $\mu$, we can even say something stronger:
+So although our best estimate of the population mean is 4.6 hours, we know that this estimate has a typical uncertainty of about **1 hour**. Because the CLT tells us x¯ is approximately normally distributed around μ, we can even say something stronger:
 
-- about **68%** of the time, $\bar{x}$ falls within 1 SE of $\mu$ → $\mu$ is likely within roughly $4.6 \pm 1$ hour
-- about **95%** of the time, within 2 SE → $\mu$ is likely within roughly $4.6 \pm 2$ hours
+- about **68%** of the time, x¯ falls within 1 SE of μ → μ is likely within roughly 4.6±1 hour
+- about **95%** of the time, within 2 SE → μ is likely within roughly 4.6±2 hours
 
 This is the engine behind **confidence intervals**, which we'll meet shortly.
 ```
 
 ```{admonition} The square-root law in practice
 :class: warning
-Because SE shrinks as $\sigma/\sqrt{n}$, **doubling your precision requires quadrupling your sample size**.
+Because SE shrinks as σ/n, **doubling your precision requires quadrupling your sample size**.
 
-- Going from $n=25$ to $n=100$ → halves the SE (5 → 2.5… wait, $5/\sqrt{25}=1$ and $5/\sqrt{100}=0.5$, so SE goes from 1 to 0.5). ✓
-- Going from $n=100$ to $n=10000$ → reduces SE by a factor of 10.
+- Going from n=25 to n=100 → halves the SE (5 → 2.5… wait, 5/25=1 and 5/100=0.5, so SE goes from 1 to 0.5). ✓
+- Going from n=100 to n=10000 → reduces SE by a factor of 10.
 
 There is no cheap way around this. The CLT is *generous* (it works on any population) but *strict* about the price of precision.
 ```
@@ -190,14 +190,14 @@ Whenever you see error bars, confidence intervals, or "is this improvement stati
 
 ---
 
-## 7. Summary
+## 7. Summary 📋
 
 ```{admonition} What to remember
 :class: important
-- **What the CLT says:** sample means become **normally distributed** as $n$ grows, *regardless of the shape of the underlying population*.
-- **Centre:** the population mean $\mu$.
-- **Spread:** the **standard error**, $\sigma/\sqrt{n}$.
-- **Rule of thumb:** $n \geq 30$ is usually enough.
+- **What the CLT says:** sample means become **normally distributed** as n grows, *regardless of the shape of the underlying population*.
+- **Centre:** the population mean μ.
+- **Spread:** the **standard error**, σ/n.
+- **Rule of thumb:** n≥30 is usually enough.
 - **The price of precision:** to halve the SE, you need **4×** the data.
 - **Why we care:** the CLT is what makes a single sample mean *trustworthy* as a stand-in for the unknown population mean - and it's the foundation of confidence intervals, hypothesis tests, and most uncertainty quantification you'll see in ML.
 ```
@@ -244,6 +244,6 @@ plt.show()
 ```{admonition} Try this
 :class: tip
 - Change the source distribution from `rng.exponential` to `rng.uniform(0, 10)` - does it still become bell-shaped?
-- Try a really skewed one: `rng.lognormal(mean=0, sigma=1, size=500_000)`. How large does $n$ need to be before the histogram looks normal?
-- What happens if you try $n = 100$ or $n = 1000$?
+- Try a really skewed one: `rng.lognormal(mean=0, sigma=1, size=500_000)`. How large does n need to be before the histogram looks normal?
+- What happens if you try n=100 or n=1000?
 ```

@@ -231,7 +231,7 @@ Now this number is easy to read: the grain diameters are *typically about 2 μm 
 
 ---
 
-## 6. Sample Statistics vs Population Statistics
+## 6. Sample Statistics vs Population Statistics 🎲
 
 Here is the key question a materials scientist should always ask:
 
@@ -295,7 +295,7 @@ Notice it matters **more** when $n$ is small (8 vs 7 is a noticeable change) and
 
 ---
 
-## 7. Summary
+## 7. Summary 📋
 
 Everything we computed for the grain-diameter dataset $\{2, 4, 4, 4, 5, 5, 7, 9\}$:
 
@@ -316,7 +316,7 @@ Almost all data in machine learning is a **sample** - a finite set of measuremen
 
 ---
 
-## 8. Check it with Python 
+## 8. Check it with Python 🐍 
 
 You never *have* to compute these by hand again - Python's `numpy` library does it in one line each. The important thing is that you now understand what each number **means**, and that is important for making conclusions on what the data is telling you (interpretation).
 
@@ -335,9 +335,12 @@ print("Sample std (n-1)  :", np.std(grain_diameters, ddof=1))    # divides by n-
 
 ```{admonition} Watch out for this!
 :class: warning
+
 By default, `numpy`'s `np.var()` and `np.std()` divide by $n$ (the **population** formula). To get the **sample** version that divides by $n-1$, you must pass **`ddof=1`**. This is a very common source of confusion - when in doubt, check which one your tool is using.
-```
-```{admonition} `numpy` has no built-in mode
-:class: tip
+
+`numpy` has no built-in mode
+
 For the **mode**, use `from scipy import stats` and then `stats.mode(grain_diameters)`, since `numpy` doesn't include a mode function directly.
 ```
+
+

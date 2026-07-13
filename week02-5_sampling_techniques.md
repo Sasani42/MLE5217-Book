@@ -91,26 +91,26 @@ When the population naturally divides into **distinct subgroups** (called *strat
 
 ```{admonition} Worked example: proportional allocation
 :class: note
-A foundry produces three alloy variants, mixed together in a batch of $N = 1000$ rods:
+A foundry produces three alloy variants, mixed together in a batch of N=1000 rods:
 
 - 600 rods of **Alloy A**
 - 300 rods of **Alloy B**
 - 100 rods of **Alloy C**
 
-You want a stratified sample of $n = 50$ rods, with sample sizes proportional to each stratum.
+You want a stratified sample of n=50 rods, with sample sizes proportional to each stratum.
 
 How many rods should you draw from each alloy?
 ```
 
 ```{admonition} Show solution
 :class: dropdown
-The proportions in the population are 60%, 30%, 10%. Apply those to $n = 50$:
+The proportions in the population are 60%, 30%, 10%. Apply those to n=50:
 
-- Alloy A: $50 \times 0.60 = 30$ rods
-- Alloy B: $50 \times 0.30 = 15$ rods
-- Alloy C: $50 \times 0.10 = 5$ rods
+- Alloy A: 50×0.60=30 rods
+- Alloy B: 50×0.30=15 rods
+- Alloy C: 50×0.10=5 rods
 
-**Total:** $30 + 15 + 5 = 50$ ✓
+**Total:** 30+15+5=50 ✓
 
 Then within each alloy group, use simple random sampling to pick the actual rods.
 ```
@@ -182,7 +182,7 @@ Multistage designs are common whenever the population has a **hierarchical struc
 :class: warning
 The danger with convenience sampling is **selection bias**: the items you *can* easily measure are different in some unobserved way from the items you *can't*. Your data will look perfectly fine - clean histograms, tight standard errors - and it will quietly mislead you.
 
-Standard errors and confidence intervals computed from a convenience sample are *not* valid, no matter how nice the formulas look. The CLT promises convergence to $\mu$ only for probability samples.
+Standard errors and confidence intervals computed from a convenience sample are *not* valid, no matter how nice the formulas look. The CLT promises convergence to μ only for probability samples.
 ```
 
 When convenience sampling is unavoidable (often the case in early-stage materials research, where you might only have a handful of specimens), be explicit about it. Acknowledge that your conclusions describe **the specimens you happened to measure**, not necessarily the wider population.
@@ -208,7 +208,7 @@ Things to notice:
 
 ---
 
-## 10. When to use which: a quick guide
+## 10. When to use which: a quick guide 🤔
 
 | Method | Use when… | Watch out for… |
 |---|---|---|

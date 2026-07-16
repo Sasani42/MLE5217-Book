@@ -94,7 +94,7 @@
         "feedback": "The second call passes \"Boron\" explicitly, which overrides the default value of \"Carbon\"."
       },
       {
-        "answer": "An error — you must always provide both arguments",
+        "answer": "An error - you must always provide both arguments",
         "correct": false,
         "feedback": "No error! Default arguments make a parameter optional. If you don't pass a value, Python uses the default instead."
       },

@@ -24,6 +24,7 @@ project:
     
 site:
   template: book-theme
-  # options:
+   options:
+   analytics_plausible: sasani42.github.io   # the domain you're tracking
   #   logo: logo.png
   #   favicon: favicon.ico

@@ -6,12 +6,8 @@ version: 1
 
 project:
   title: "MLE5217 — Foundations of Machine Learning for Materials Science"
-  # An 'id' is optional. Running `jupyter book init` can generate one for you.
-  # authors:
-    # - name: "Unga Banga"        # <- change to your name
-  # ---- Table of contents ----
-  # Each '- file:' is one page, in order. 'children:' makes a nested section.
-  # Add a new week by copying a notebook and adding a line here.
+  downloads: []
+  
   toc:
     - file: intro-python.md
     - title: "Week 0 — Introduction to Python"
@@ -20,11 +16,19 @@ project:
         - file: week00-2_python.ipynb
         - file: week00-3_packages.ipynb
         - file: week00-4_errors.ipynb
-    
+    - title: "Week 1 — Introduction to Machine Learning"
+      children:
+        - file: week01-1_lecture.ipynb
+        - file: week01-2_linear_algebra.ipynb   
+        - file: week01-3_warmup_python.ipynb
+          title: Warm-up Python
+    - title: "Week 2 — Describing Data"
+      children:
+        - file: week02-1_preview.md
+        
     
 site:
   template: book-theme
-   options:
-   analytics_plausible: sasani42.github.io   # the domain you're tracking
+   
   #   logo: logo.png
   #   favicon: favicon.ico

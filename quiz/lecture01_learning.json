@@ -21,7 +21,7 @@
       {
         "answer": "Semi-supervised learning",
         "correct": false,
-        "feedback": "Semi-supervised learning uses a mix of labelled and unlabelled data. Here there are no labels at all — making this purely unsupervised."
+        "feedback": "Semi-supervised learning uses a mix of labelled and unlabelled data. Here there are no labels at all - making this purely unsupervised."
       }
     ]
   },
@@ -32,7 +32,7 @@
       {
         "answer": "Unsupervised learning",
         "correct": false,
-        "feedback": "Unsupervised learning works with unlabelled data. Here, every compound has a measured bandgap — that measurement is the label. The model learns the relationship between input (formula) and output (bandgap)."
+        "feedback": "Unsupervised learning works with unlabelled data. Here, every compound has a measured bandgap - that measurement is the label. The model learns the relationship between input (formula) and output (bandgap)."
       },
       {
         "answer": "Reinforcement learning",

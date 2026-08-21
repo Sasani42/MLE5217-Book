@@ -32,6 +32,7 @@ project:
         - file: week02-4_worked_examples.md
         - file: week02-5_sampling_techniques.md
     - title: "Week 3 — Linear Regression"
+      children:
         - file: week03-1_preview.md
         
     

@@ -189,7 +189,7 @@ When convenience sampling is unavoidable (often the case in early-stage material
 
 ---
 
-## 9. Visual comparison 
+## 9. Visual comparison 👀
 
 Below, the same population of 100 specimens is sampled four different ways, drawing $n = 20$ each time. The strata are colour-coded: **60 Type A**, **30 Type B**, **10 Type C**. The "ideal" proportional allocation would be 12 A, 6 B, 2 C.
 
@@ -221,7 +221,40 @@ Things to notice:
 
 ---
 
-## 11. Looking ahead 👀
+## 11. What happens when Sampling goes wrong?
+
+💊 Medical and Treatment Failures
+
+Ineffective Therapy Models: Standard clinical psychology interventions, like Cognitive Behavioral Therapy (CBT), were developed and tested almost exclusively on Western populations. When applied globally, these models often fail because they emphasize individualistic problem-solving, which can clash with cultures rooted in collectivism or deep-seated ancestral traditions.
+
+Misdiagnosing Mental Health: Diagnostic tools like the DSM (Diagnostic and Statistical Manual of Mental Disorders) are built on WEIRD baseline behaviors. As a result, normal cultural expressions of grief, spiritual experiences, or trauma in non-Western communities are frequently misdiagnosed as psychiatric disorders, leading to inappropriate over-medication.
+
+💰 Wasted Public Funds and Bad Policies
+
+Misallocated Government Budgets: As seen with the Mozart Effect, governments spent millions of dollars buying classical music CDs for newborns based on flawed, over-generalized media hype. This diverted precious public funds away from proven early-childhood interventions, like funding understaffed preschools or supporting low-income nutrition programs.
+
+Flawed Educational Reforms: Educational policies regarding grit, self-esteem, or "learning styles" are often fast-tracked into school curriculums globally based on studies of affluent Western school districts. When these policies fail to improve test scores or well-being in underfunded, rural, or international schools, communities lose trust in public education.
+
+🏢 Toxic Workplace Environments
+
+Discriminatory Corporate Hiring: Many corporate HR departments rely heavily on personality tests (like Myers-Briggs or similar psychometric tools) to hire and promote staff. Because these tests were calibrated using WEIRD subjects, they favor highly individualistic, self-promoting traits, effectively penalizing and filtering out qualified candidates from diverse or community-oriented cultural backgrounds.
+
+Pseudoscience Productivity Mandates: The over-generalization of the "draining willpower" (ego-depletion) theory led corporations to restructure workdays around the myth that employees are useless by afternoon. This created rigid, inefficient corporate schedules that ignored individual biological rhythms and diverse cultural attitudes toward focus and endurance.
+
+🌍 Cultural Imperialism and Stigmatization
+
+Making Non-Western Behavior a problem: When WEIRD behavior is treated as the "universal human default," any culture that deviates from it is viewed as abnormal, deficient, or backward. For example, Western benchmarks for child development often label children from communal cultures as "belated" or "dependent" simply because they value group cooperation over early independence.
+
+The "Defective Generation" Narrative: Over-generalizing localized social media studies creates a global moral problem. It unfairly stigmatizes an entire generation of youth as fragile or broken, leading parents and institutions to implement overprotective, restrictive rules that actually hinder natural social development.
+
+
+```{admonition} Selection bias
+:class: warning
+
+⚠️ So, next time, you are scrolling through your news feed on your social media - Always be skeptical, 🤔 do not believe what you read - specially if it's trying to get you rallied up about something. "The five things that will This One Resume Trick Gets You Hired Instantly (No Experience!)", "I Drank This Every Morning For A Week And My Brain Changed", "The Ultimate Study Hack Ivy League Students Don't Want You To Know" etc.. - 🚩 The bottom line is that there is no magic pill or magic trick that will sort out all your problems. Everyone is different and what works for someone else may not work for you, and they definitely cannot be generalized. 
+```
+
+## 12. Looking ahead 👀
 
 Sampling techniques may feel like a topic for survey statisticians, but they show up everywhere in machine learning later in this course:
 
@@ -232,5 +265,5 @@ Sampling techniques may feel like a topic for survey statisticians, but they sho
 
 ```{admonition} The bottom line
 :class: important
-The CLT, confidence intervals, and most of machine learning all rest on a quiet assumption: that the data you have is a fair sample of the population you care about. **Sampling design is where that assumption is either earned or lost.** Choose your method deliberately; document it clearly; and when you can't sample randomly, say so.
+The CLT, confidence intervals, and most of machine learning all rest on an assumption: that the data you have is a fair sample of the population you care about. **Sampling design is where that assumption is either earned or lost.** Choose your method deliberately; document it clearly; and when you can't sample randomly, say so.
 ```

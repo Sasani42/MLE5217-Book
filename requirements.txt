@@ -7,4 +7,4 @@ jupyterquiz         # interactive self-check multiple-choice questions
 numpy
 pandas
 matplotlib
-sklearn
+scikit-learn

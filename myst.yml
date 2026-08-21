@@ -22,9 +22,17 @@ project:
         - file: week01-2_linear_algebra.ipynb   
         - file: week01-3_warmup_python.ipynb
           title: Warm-up Python
+        - file: week01-4_Solutions.ipynb
+          title: Solutions to Problems
     - title: "Week 2 — Describing Data"
       children:
         - file: week02-1_preview.md
+        - file: week02-2_lecture.ipynb
+        - file: week02-3_worked_examples.md
+        - file: week02-4_worked_examples.md
+        - file: week02-5_sampling_techniques.md
+    - title: "Week 3 — Linear Regression"
+        - file: week03-1_preview.md
         
     
 site:

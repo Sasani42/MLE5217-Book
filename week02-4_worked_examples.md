@@ -11,7 +11,7 @@ In the previous section we made a careful distinction between the **population**
 
 That immediately raises a worrying question:
 
-> If I take **a different sample**, I'll get a **different** sample mean. So how trustworthy is *any one* sample mean? Could it be wildly off?
+> If I take **a different sample**, I'll get a **different** sample mean. So how trustworthy is *any one* sample mean? Could it be completely off?
 
 This is one of the most important questions in all of statistics - and the answer is given by the **Central Limit Theorem** (CLT). It is also one of the most surprising results in science, so it is worth slowing down to see it in action.
 
@@ -34,7 +34,7 @@ $$
 where σ is the population standard deviation.
 ```
 
-Two pieces here deserve emphasis:
+Two pieces to note:
 
 1. **The shape becomes normal even when the original data isn't.** This is the magic of the CLT. The bell curve is not assumed - it *emerges*.
 2. **The spread shrinks as $\sqrt{n}$.** Bigger samples give more reliable means. To halve your uncertainty, you need *four times* as much data - not twice.
@@ -207,6 +207,8 @@ Whenever you see error bars, confidence intervals, or "is this improvement stati
 ## 8. Reproduce it yourself (optional)
 
 If you want to play with the simulation - try a different population shape, a different sample size, or a different number of repeats - the entire figure can be reproduced with a short Python snippet:
+
+Just open up a new Python script and copy (or write out) the following code, then run. You can change the parameters to see how they affect the outcome.
 
 ```{code-cell} python3
 import numpy as np

@@ -100,7 +100,7 @@ $$
 
 ```{admonition} Why have both a mean and a median?
 :class: tip
-The median is **robust** to extreme values. If that single 9 μm grain had instead been a giant 90 μm grain, the **mean** would jump dramatically, but the **median** would not move at all. In materials data, one unusual outlier (a measurement error, a defect, a stray large grain) can pull the mean around - the median is often a safer "typical value".
+The median is **robust** to extreme values. If that single 9 μm grain had instead been a giant 90 μm grain, the **mean** would jump dramatically, but the **median** would not move much. In materials data, one unusual outlier (a measurement error, a defect, a stray large grain) can pull the mean around - the median is often a safer "typical value".
 ```
 
 ---
@@ -162,6 +162,14 @@ $$
 \sigma^2 = \frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2
 $$
 
+The $\sum$ means that you have to add up all the terms from the bottom limit $(i=1)$ to the top limit $(i=n)$
+
+I.e.
+$$
+\sigma^2 = \frac{1}{n}[(x_1 - \bar{x})^2 +(x_2 - \bar{x})^2 +(x_3 - \bar{x})^2 +\dots +(x_n - \bar{x})^2]
+$$
+
+
 ```{admonition} Problem
 :class: note
 Using the mean $\bar{x} = 5$ μm we found earlier, calculate the variance.
@@ -197,7 +205,7 @@ $$
 
 ```{admonition} Why are the units squared?
 :class: tip
-Because we squared the deviations, the units get squared too - here, μm². "4 square-micrometres of spread" is hard to picture. That awkwardness is exactly what the next quantity fixes.
+Because we squared the deviations, the units get squared too - here, μm². "4 square-micrometres of spread" is hard to picture. That is exactly why we generally prefer to use Standard Deviation.
 ```
 
 ---
@@ -240,7 +248,7 @@ Here is the key question a materials scientist should always ask:
 - The **population** is the *entire* collection we actually care about - for example, **every grain in the whole batch of material**, possibly millions of them.
 - A **sample** is the *small subset* we actually measured - for example, the **8 grains visible in one micrograph**.
 
-In real materials work, we almost never measure the whole population. It would take forever. Instead we measure a sample and use it to **estimate** what the population is like. This is the bridge from *descriptive* statistics (describing what we measured) to *inferential* statistics (drawing conclusions about what we did **not** measure) — and it is the same logic behind machine learning, where we learn from a limited dataset and hope to **generalise** to new, unseen data.
+In real materials work, we almost never measure the whole population. It would take forever. Instead we measure a sample and use it to **estimate** what the population is like. This is the bridge from *descriptive* statistics (describing what we measured) to *inferential* statistics (drawing conclusions about what we did **not** measure) - and it is the same logic behind machine learning, where we learn from a limited dataset and hope to **generalise** to new, unseen data.
 
 ### The notation changes
 

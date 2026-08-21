@@ -9,7 +9,6 @@ title: "What to expect this week"
 Inferential statistics is the branch of statistics that deals with drawing conclusions about a larger group based on a smaller sample of data. It also covers making future predictions based on current data. Everyday examples include predicting election outcomes from polls, estimating the effectiveness of a new drug from clinical trials, and forecasting population growth from census samples.
 
 But before we can predict what comes next, we need to know the relationship between the variables of the current data.
-p
 
 So, the next lecture is all about Finding the Best Line between two or more variables.
 
@@ -69,7 +68,7 @@ There is no single obvious answer to question 3 - and that's the point. We need 
 :::{admonition} 📢 Words to listen for
 :class: note
 
-The following terms will come up frequently in the next few lectures. You don't need to memorise them now — just be aware that they exist:
+The following terms will come up frequently in the next few lectures. You don't need to memorise them now - just be aware that they exist:
 
 - **Line of best fit** — a line that best represents the trend in the data
 - **Residual** — the vertical distance between a data point and the line

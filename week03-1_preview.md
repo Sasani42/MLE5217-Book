@@ -78,7 +78,7 @@ The following terms will come up frequently in the next few lectures. You don't 
 :::
 
 
-**🐍 Python**
+## 🐍 Python
 
 We will be using the Linear Regression class from the Sci-kit learn package
 
@@ -86,6 +86,20 @@ We will be using the Linear Regression class from the Sci-kit learn package
 
 and later extending it into the [Polynomial functions](
 https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html)
+
+and/or 
+[numpy version: polyfit](https://numpy.org/doc/stable/reference/generated/numpy.polyfit.html) and [numpy version: polyval](https://numpy.org/doc/stable/reference/generated/numpy.polyval.html#numpy-polyval)
+
+----------------------------------------------------------------------------------------------------
+## 👇Datasets for In-class Problems
+
+Download these two datasets and add it into your MLE5217 folder - where your jupyter notebooks are also stored. 
+If you are not sure where this is, open Anacond Prompt activate your mle5217 environment (conda activate mle5217) - look at the path (C:xxx/xx..) this is where your location would be.
+
+⬇️[Vickers_Hardness_data](data/lec03-vickers_hardness.csv)
+
+⬇️[Stress_strain_data](data/lec03-stress_strain.csv)
+
 
 
 :::{note}

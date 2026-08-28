@@ -35,7 +35,7 @@ project:
       children:
         - file: week03-1_preview.md
         - file: week03-2_regression.ipynb
-        - file: week03-3_Regression_Supplementary.html
+        - file: week03-3_Regression_Supplementary.ipynb
           hidden: true
         - file: week03-4_regression_ML.ipynb
         - file: week03-5_polynomial_regression.ipynb
@@ -46,8 +46,6 @@ project:
     - title: "Week 4 — Data Cleaning & Clustering"
       children:
         - file: week04-1_preview.md
-        - file: week04-2_data_cleaning.ipynb
-        - file: week04-3_kmeans_clustering.ipynb
 site:
   template: book-theme
    

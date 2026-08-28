@@ -9,7 +9,7 @@ project:
   downloads: []
   
   toc:
-    - file: intro-python.md
+    - file: week00_introduction.md
     - title: "Week 0 — Introduction to Python"
       children:
         - file: week00-1_lecture.ipynb
@@ -34,8 +34,20 @@ project:
     - title: "Week 3 — Linear Regression"
       children:
         - file: week03-1_preview.md
-        
-    
+        - file: week03-2_regression.ipynb
+        - file: week03-3_Regression_Supplementary.html
+          hidden: true
+        - file: week03-4_regression_ML.ipynb
+        - file: week03-5_polynomial_regression.ipynb
+        - file: week03-6_regression_variants.ipynb
+        - file: week03-7_homework_brief.md
+        - file: week03-8_HW_Solutions.ipynb
+          hidden: true
+    - title: "Week 4 — Data Cleaning & Clustering"
+      children:
+        - file: week04-1_preview.md
+        - file: week04-2_data_cleaning.ipynb
+        - file: week04-3_kmeans_clustering.ipynb
 site:
   template: book-theme
    

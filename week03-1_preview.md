@@ -94,7 +94,7 @@ and/or
 ## 👇Datasets for In-class Problems
 
 Download these two datasets and add it into your MLE5217 folder - where your jupyter notebooks are also stored. 
-If you are not sure where this is, open Anacond Prompt activate your mle5217 environment (conda activate mle5217) - look at the path (C:xxx/xx..) this is where your location would be.
+If you are not sure where this is, open Anaconda Prompt activate your mle5217 environment (conda activate mle5217) - look at the path (C:xxx/xx..) this is where your location would be.
 
 ⬇️[Vickers_Hardness_data](data/lec03-vickers_hardness.csv)
 

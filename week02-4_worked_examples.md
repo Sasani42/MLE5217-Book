@@ -7,9 +7,13 @@ kernelspec:
 
 # 🛠️ Worked Example: The Central Limit Theorem
 
-In the previous section we made a careful distinction between the **population** (everything we care about - usually unmeasurable) and the **sample** (the small set of measurements we actually have). We used the sample mean $\bar{x}$ as our best guess of the unknown population mean $\mu$.
+So now we know the difference between the **population** (everything we care about - usually NOT measurable) and the **sample** (the small set of measurements we actually have). Since we can't measure the whole population, we wouldn't know the *true* mean, what we can do instead is to use the sample mean $\bar{x}$ as our best guess of the unknown population mean $\mu$.
 
-That immediately raises a worrying question:
+But wait, surely that's not accurate - we can't use the sample mean $\bar{x}$ to replace the population mean $\mu$. But, if you think about it, if your sample gets larger and larger $\bar{x}$ would get closer and closer to the population mean $\mu$. But a very small sample size may deviate more from the actual $\mu$. 
+
+So, the questions now become, 
+
+>How big should the sample size be for us to estimate the population mean with some certainty?  
 
 > If I take **a different sample**, I'll get a **different** sample mean. So how trustworthy is *any one* sample mean? Could it be completely off?
 
@@ -39,27 +43,31 @@ Two pieces to note:
 1. **The shape becomes normal even when the original data isn't.** This is the magic of the CLT. The bell curve is not assumed - it *emerges*.
 2. **The spread shrinks as $\sqrt{n}$.** Bigger samples give more reliable means. To halve your uncertainty, you need *four times* as much data - not twice.
 
-We're going to see both of these happen with our own eyes.
+We're going to see both of these happen with our own eyes, and once you understand this concept, you'll be able to answer the earlier questions on sample size.
 
 ---
 
-## 2. The setup: failure times of a material
+## 2. The setup: failure times of a material 🫖
 
 Suppose we are stress-testing a new ceramic and recording how many **hours each specimen lasts before it fractures**. Failure times like these are famously **right-skewed**: lots of specimens fail early, a few survive much longer. The bell-curve shape *does not apply* to the raw failure times.
 
-For this example we'll work with a population where the **true population mean is $\mu = 5$ hours** and the **true population standard deviation is $\sigma = 5$ hours**. (These values come from a so-called *exponential* distribution - the details aren't important; what matters is that the shape looks nothing like a bell.)
+For this example let's imagine we are working with a population where the **true population mean is $\mu = 5$ hours** and the **true population standard deviation is $\sigma = 5$ hours**. But of course, we wouldn't know these values while we are setting up the experiment (These values come from a so-called *exponential* distribution - the details aren't important; what matters is that the shape looks nothing like a bell.)
+
+While setting things up, we can wonder 🤔 how mnay samples do we need to test in order to get a good statistical estimate of the actual mean?
 
 ```{admonition} Problem
 :class: note
-We are going to run a thought experiment. We will pretend to repeat the following procedure many thousands of times:
+To answer the above, we are going to run a thought experiment 🤔💭. Imaging we repeat the following procedure many thousands of times:
 
-> *"Draw n failure times from the population, compute their sample mean x¯, write it down."*
+> If we could *"Draw n failure times from the population, compute their sample mean $\bar{x}$, write it down."*
 
-This gives us a whole collection of sample means. According to the CLT, that collection should look more and more like a bell curve as n grows, centred at μ=5, with spread σ/n=5/n.
+This gives us a whole collection of sample means $(\bar{x_1},\bar{x_2},\bar{x_3}\dots\bar{x_n}$. 
 
-**Before looking at the figure**, fill in this prediction table using σ/n:
+According to the CLT, that collection of $\bar{x}$'s should look more and more like a bell curve as n grows, centred at μ=5, with spread $σ/\sqrt{n}=5/\sqrt{n}$.
 
-| Sample size n | Predicted centre of the bell | Predicted spread σ/n |
+So if that were true, you can fill in the predictions for sample spread $σ/\sqrt{n}$:
+
+| Sample size n | Predicted centre of the bell | Predicted spread $σ/\sqrt{n}$ |
 |---|---|---|
 | 1   | ? | ? |
 | 2   | ? | ? |
@@ -72,7 +80,7 @@ This gives us a whole collection of sample means. According to the CLT, that col
 
 The centre is **always μ=5 hours**, no matter what n is. Only the spread changes:
 
-| Sample size n | Centre | Spread σ/n=5/n |
+| Sample size n | Centre | Spread $σ/\sqrt{n} =5/\sqrt{n}$ |
 |---|---|---|
 | 1   | 5 | 5/1=5.00 |
 | 2   | 5 | 5/2≈3.54 |
@@ -84,20 +92,30 @@ So the CLT predicts: as n grows from 1 to 30, the cloud of sample means stays ce
 
 ---
 
-## 3. Now let's actually do it
+## 3. Now let's actually do it 
+
+We are going to draw samples from the population according to the earlier table. But each sample size we will re-draw (randomly) multiple times - 20,000 to be exact. 
+
+So we start with drawing 1 sample - record their mean (which is the value of that material), and then draw another 1 sample, and another until we've drawn 20,000 samples and recorded their values.
+
+Next we are moving on to sample size two. Now we will draw two samples at a time - record the mean value of their failure time, and then re-draw another 2 samples etc.
+
+Next we draw 5 samples at a time, record their sample mean, then re-draw another 5 samples and record their means until we've got 20,000 mean values.
+
+Similarly we will draw a set of 30 ceramic samples, record their mean failure time, and then re-draw another 30 ceramic samples and keep going until we have 20,000 recorded values. 
 
 Below, each panel shows what happens when we draw 20,000 samples of size $n$, compute the mean of each, and histogram those 20,000 means. The red curve is the bell curve the CLT *predicts* - centre at 5, spread $5/\sqrt{n}$.
 
 <img src="images/lec02_clt_figure.png" width="600">
 
 
-The distribution of sample means as the sample size $n$ grows. The underlying population (failure times) is right-skewed and looks nothing like a bell - yet by $n=30$, the distribution of sample means is essentially indistinguishable from the bell curve predicted by the CLT (red).
+The **distribution of sample means** as the sample size $n$ grows. The underlying population (failure times) is right-skewed and looks nothing like a bell - yet by $n=30$, the distribution of sample means is essentially indistinguishable from the bell curve predicted by the CLT (red).
 
 
 
-Look carefully at each panel:
+Look carefully at each panel:👀
 
-- **$n = 1$** - A "sample of size 1" is just a single measurement, so this panel is really just showing the population itself. It is steeply right-skewed, with most failures happening early. *No bell anywhere.* In fact the red CLT-predicted bell is clearly wrong here: it even puts probability below 0 hours, which is impossible for a failure time. **Bottom line:** at $n=1$ the CLT has not "kicked in" yet.
+- **$n = 1$** - A "sample of size 1" is just a single measurement, so this panel is really just showing the population itself. It is steeply right-skewed, with most failures happening early. *No bell anywhere.* In fact the red CLT-predicted bell is clearly wrong here: if you extend the bell-shape towards and beyond zero, it even puts probability below 0 hours, which is impossible for a failure time. **Bottom line:** at $n=1$ the CLT has not "kicked in" yet.
 
 - **$n = 2$** - Averaging just two measurements already pulls the histogram inward. It is still skewed, but a hump is appearing near 5.
 
@@ -107,7 +125,7 @@ Look carefully at each panel:
 
 ```{admonition} Verifying the prediction numerically
 :class: tip
-Comparing what we *predicted* with σ/n to what the simulation *actually produced*:
+Comparing what we *predicted* with $σ/\sqrt{n}$ to what the simulation *actually produced*:
 
 | n | Predicted spread | Observed spread of sample means |
 |---|---|---|
@@ -116,10 +134,11 @@ Comparing what we *predicted* with σ/n to what the simulation *actually produce
 | 5  | 2.24 | 2.24 |
 | 30 | 0.91 | 0.92 |
 
-The CLT formula is not approximate hand-waving - it nails the spread of the sample means to within a fraction of a percent. *(These observed values come from the simulation that produced the figure above.)*
-
+The CLT formula actually predicted the spread of the sample means to within a fraction of a percent. *(These observed values come from the simulation that produced the figure above.)*
 
 ---
+
+OK, now let's finish our thought experiment and come back to our real experiment - how many ceramic peices should we test (sample size) for us to estimate the population mean accurately?
 
 ## 4. The "n is large enough" rule of thumb
 
@@ -141,11 +160,13 @@ $$
 \text{SE}(\bar{x}) \;=\; \frac{\sigma}{\sqrt{n}}
 $$
 
-This is the quantity that tells us *how uncertain our sample mean is as an estimate of the true population mean.*
+This is the quantity that tells us *how uncertain our sample mean is as an estimate of the t.rue population mean.*
+
+So, if our sample size was just 1 - we are very uncertain if our mean value (sample mean) represents the true population mean. But as our sample size increases our uncertainty value decreases and we can be more confident that our sample mean approximates the true population mean.
 
 ```{admonition} Problem
 :class: note
-You measure the failure times of n=25 ceramic specimens and find a sample mean of x¯=4.6 hours. Assume the population standard deviation is known to be σ=5 hours.
+You measure the failure times of n=25 ceramic specimens and find a sample mean of $\bar{x}=4.6$ hours. Assume the population standard deviation is known to be σ=5 hours.
 
 What is the standard error of your sample mean?
 ```
@@ -157,15 +178,19 @@ $$
 \text{SE}(\bar{x}) = \frac{\sigma}{\sqrt{n}} = \frac{5}{\sqrt{25}} = \frac{5}{5} = 1 \ \text{hour}
 $$
 
-So although our best estimate of the population mean is 4.6 hours, we know that this estimate has a typical uncertainty of about **1 hour**. Because the CLT tells us x¯ is approximately normally distributed around μ, we can even say something stronger:
+So although our best estimate of the population mean is 4.6 hours, we know that this estimate has a typical uncertainty of about **1 hour**. Because the CLT tells us $\bar{x}$ is approximately normally distributed around μ, we can even say something stronger:
 
-- about **68%** of the time, x¯ falls within 1 SE of μ → μ is likely within roughly 4.6±1 hour
+- about **68%** of the time, $\bar{x}$ falls within 1 SE of μ → μ is likely within roughly 4.6±1 hour
 - about **95%** of the time, within 2 SE → μ is likely within roughly 4.6±2 hours
 
-This is the engine behind **confidence intervals**, which we'll meet shortly.
+The 68% and 95% values stem from the standard normal distribution 
+
+<img src="images/lec02_confidence.png" width="600">
+
+This is the engine behind **confidence intervals**.
 ```
 
-```{admonition} The square-root law in practice
+```{admonition} The square-root law in practice 
 :class: warning
 Because SE shrinks as σ/n, **doubling your precision requires quadrupling your sample size**.
 
@@ -202,6 +227,10 @@ Whenever you see error bars, confidence intervals, or "is this improvement stati
 - **Why we care:** the CLT is what makes a single sample mean *trustworthy* as a stand-in for the unknown population mean - and it's the foundation of confidence intervals, hypothesis tests, and most uncertainty quantification you'll see in ML.
 ```
 
+Standard deviation (s) describes how spread out the individual measurements are. If you report $\bar{x} ± s$, you're saying "here's how much any single ceramic specimen's failure time tends to vary from the average." This number does not shrink as you test more specimens - testing 1000 pieces instead of 25 won't make the ceramic itself less variable.
+
+Standard error $(SE = s/\sqrt{n})$ describes how uncertain your estimate of the mean is. If you report $\bar{x} ± SE$, you're saying "here's how much my estimate of the true population mean would bounce around if I repeated this experiment." This number does shrink as n grows, because more data gives you a more precise estimate of μ, even though the material itself is exactly as variable as before.
+
 ---
 
 ## 8. Reproduce it yourself (optional)
@@ -213,39 +242,81 @@ Just open up a new Python script and copy (or write out) the following code, the
 ```{code-cell} python3
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 rng = np.random.default_rng(seed=7)
 
-# A non-normal population: failure times (hours), exponentially distributed
-beta = 5.0
-population = rng.exponential(scale=beta, size=500_000)
+# ---- Pick a population shape here - the only line that needs changing ----
+DIST_NAME = "poisson"   # try: "exponential" | "uniform" | "lognormal" | "weibull" | "gamma" | "poisson".
+
+#We need to specify mean and standard deviation for the distribution that is in use
+#Each distribution requires different parameters:
+
+DISTRIBUTIONS = {
+    "exponential": {
+        "sampler": lambda rng, size: rng.exponential(scale=5.0, size=size),
+        "mean":    lambda: 5.0,
+        "std":     lambda: 5.0,
+    },
+    "uniform": {
+        "sampler": lambda rng, size: rng.uniform(0.0, 10.0, size=size),
+        "mean":    lambda: (0.0 + 10.0) / 2,
+        "std":     lambda: (10.0 - 0.0) / np.sqrt(12),
+    },
+    "lognormal": {
+        "sampler": lambda rng, size: rng.lognormal(mean=1.3, sigma=0.5, size=size),
+        "mean":    lambda: np.exp(1.3 + 0.5**2 / 2),
+        "std":     lambda: np.sqrt((np.exp(0.5**2) - 1) * np.exp(2*1.3 + 0.5**2)),
+    },
+    "weibull": {
+        "sampler": lambda rng, size: 5.0 * rng.weibull(1.5, size=size),
+        "mean":    lambda: 5.0 * math.gamma(1 + 1/1.5),
+        "std":     lambda: 5.0 * np.sqrt(math.gamma(1 + 2/1.5) - math.gamma(1 + 1/1.5)**2),
+    },
+    "gamma": {
+        "sampler": lambda rng, size: rng.gamma(shape=2.0, scale=2.5, size=size),
+        "mean":    lambda: 2.0 * 2.5,
+        "std":     lambda: 2.5 * np.sqrt(2.0),
+    },
+    "poisson": {
+        "sampler": lambda rng, size: rng.poisson(lam=4.0, size=size),
+        "mean":    lambda: 4.0,
+        "std":     lambda: np.sqrt(4.0),
+    },
+}
+
+spec = DISTRIBUTIONS[DIST_NAME]  #python picks up the parameters depending on the DIST_NAME
+population = spec["sampler"](rng, 500_000)
+mu, sigma = spec["mean"](), spec["std"]()
+# --------------------------------------------------------------------------------
+
+#Next we plot
 
 fig, axes = plt.subplots(1, 4, figsize=(14, 3.3))
 for ax, n in zip(axes, [1, 2, 5, 30]):
-    # Repeatedly draw a sample of size n, compute its mean, 20000 times
     sample_means = rng.choice(population, size=(20_000, n), replace=True).mean(axis=1)
 
-    xmax = 30 if n == 1 else 15
-    ax.hist(sample_means, bins=60, density=True, range=(0, xmax),
-            color="#4C78A8", edgecolor="white", alpha=0.85)
+    se = sigma / np.sqrt(n)
+    lo, hi = max(0.0, mu - 6*se), mu + 6*se   # auto-sized window, no hardcoded xmax
 
-    # Overlay the bell curve the CLT predicts
-    se = beta / np.sqrt(n)
-    xs = np.linspace(0, xmax, 400)
-    pdf = (1/(se*np.sqrt(2*np.pi))) * np.exp(-0.5*((xs - beta)/se)**2)
+    ax.hist(sample_means, bins=60, density=True, range=(lo, hi),
+             color="#4C78A8", edgecolor="white", alpha=0.85)
+
+    xs = np.linspace(lo, hi, 400)
+    pdf = (1/(se*np.sqrt(2*np.pi))) * np.exp(-0.5*((xs - mu)/se)**2)
     ax.plot(xs, pdf, color="#E45756", lw=2)
 
-    ax.axvline(beta, color="black", linestyle="--", linewidth=1)
+    ax.axvline(mu, color="black", linestyle="--", linewidth=1)
     ax.set_title(f"n = {n}")
     ax.set_xlabel("Sample mean (hours)")
 
 plt.tight_layout()
 plt.show()
+
+
 ```
 
 ```{admonition} Try this
 :class: tip
-- Change the source distribution from `rng.exponential` to `rng.uniform(0, 10)` - does it still become bell-shaped?
-- Try a really skewed one: `rng.lognormal(mean=0, sigma=1, size=500_000)`. How large does n need to be before the histogram looks normal?
-- What happens if you try n=100 or n=1000?
+- Change the source distribution (DIST_NAME) and try out the various distributions given alongside - does it still become bell-shaped?
 ```

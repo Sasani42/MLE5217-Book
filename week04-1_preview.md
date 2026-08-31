@@ -107,7 +107,29 @@ From Scikit-learn
 
 ## 👇Datasets for In-class Problems
 
-I will add the datasets within the week.
+📊[Mechanical Dataset](data/lec04-Cleaning.csv) *
+
+* About this file: 
+The Mechanical Dataset includes the following properties:
+
+- Standard (Std)
+- Unique Identification code for the Material (ID)
+- Material Name
+- Ultimate Tensile Strength (Su) in MPa
+- Yield Strength (Sy) in MPa
+- Elongation at Break or Strain (A5) as a Percentage
+- Brinell Hardness Number (BHN) in Microhardness Units
+- Elastic Modulus (E) in MPa
+- Shear Modulus (G) in MPa
+- Poisson's Ratio (mu) in Units of Length
+- Density (Ro) in Kg/m3
+
+📊[Conductivity Dataset for Clustering](data/lec04-Kmeans.csv)
+
+- Sample number (unique identifier)
+- Electrical Conductivity $(\times 10^7 S/m)$
+- Thermal Conductivity $(W/mK)$
+
 
 Download these datasets and add it into your MLE5217 folder - where your jupyter notebooks are also stored. 
 If you are not sure where this is, open Anaconda Prompt activate your mle5217 environment (conda activate mle5217) - look at the path (C:xxx/xx..) this is where your location would be.

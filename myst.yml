@@ -46,6 +46,9 @@ project:
     - title: "Week 4 — Data Cleaning & Clustering"
       children:
         - file: week04-1_preview.md
+        #- file: week04-2_data_cleaning.ipynb
+        #- file: week04-3_kmeans_clustering.ipynb
+        #- file: week04-Home_work_Atomic_radii.ipynb
 site:
   template: book-theme
    

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>k-means clustering, step by step</title>
+<!-- k-means clustering — interactive, step-by-step demo -->
+<!-- Self-contained: no external libraries or fonts. Safe to embed via iframe. -->
+</head>
+<body style="margin:0; padding:16px;">
+<div id="km-root">
+<style>
+  #km-root{
+    --ink:#12395b; --ink-soft:#5b6b7d; --line:#e3e8ef; --panel:#f6f8fb;
+    --amber:#f5c518; --amber-edge:#c99b00;
+    --cA:#e4572e; --cB:#2e6fdb; --cC:#2ea44f;
+    --edge:#12395b;
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    max-width:940px; margin:0 auto; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  #km-root *{box-sizing:border-box;}
+  #km-root h2{
+    font-family:Georgia,"Times New Roman",serif; font-weight:600;
+    font-size:1.5rem; letter-spacing:.2px; margin:0 0 2px; color:var(--ink);
+  }
+  #km-root .sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 14px;}
+  #km-root .layout{display:grid; grid-template-columns:1fr 300px; gap:16px; align-items:start;}
+  @media (max-width:760px){ #km-root .layout{grid-template-columns:1fr;} }
+
+  #km-root .stage{border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden;}
+  #km-root .plotwrap{position:relative; width:100%; aspect-ratio:4/3;}
+  #km-root canvas{display:block; width:100%; height:100%;}
+
+  #km-root .status{
+    display:flex; gap:9px; align-items:flex-start; padding:11px 13px;
+    background:var(--panel); border-top:1px solid var(--line); font-size:.9rem; min-height:44px;
+  }
+  #km-root .status .dot{width:9px;height:9px;border-radius:50%;background:var(--ink);margin-top:6px;flex:none;}
+  #km-root .status.go .dot{background:var(--cB);}
+  #km-root .status.done .dot{background:var(--cC);}
+
+  #km-root .toolbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0 4px;}
+  #km-root button{
+    font:inherit; font-size:.88rem; padding:8px 13px; border-radius:8px; cursor:pointer;
+    border:1px solid var(--line); background:#fff; color:var(--ink); transition:background .12s,border-color .12s;
+  }
+  #km-root button:hover:not(:disabled){background:var(--panel);}
+  #km-root button:disabled{opacity:.42; cursor:default;}
+  #km-root button.primary{background:var(--ink); border-color:var(--ink); color:#fff;}
+  #km-root button.primary:hover:not(:disabled){background:#0d2c48;}
+  #km-root button:focus-visible{outline:2px solid var(--cB); outline-offset:2px;}
+
+  #km-root .seg{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  #km-root .seg button{border:0; border-radius:0; border-left:1px solid var(--line);}
+  #km-root .seg button:first-child{border-left:0;}
+  #km-root .seg button.on{background:var(--ink); color:#fff;}
+  #km-root .seg-label{font-size:.82rem; color:var(--ink-soft); margin-right:2px;}
+  #km-root .speed{display:inline-flex; align-items:center; gap:7px; font-size:.82rem; color:var(--ink-soft);}
+  #km-root input[type=range]{accent-color:var(--ink);}
+
+  #km-root .side{display:flex; flex-direction:column; gap:14px;}
+  #km-root .card{border:1px solid var(--line); border-radius:12px; padding:12px 13px; background:#fff;}
+  #km-root .card h3{margin:0 0 8px; font-size:.82rem; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft);}
+  #km-root .legend{display:flex; flex-direction:column; gap:6px; font-size:.86rem;}
+  #km-root .legend .row{display:flex; align-items:center; gap:9px;}
+  #km-root .swatch{width:14px;height:14px;border-radius:50%; border:1px solid rgba(0,0,0,.18); flex:none;}
+  #km-root .xmark{font-weight:700; width:14px; text-align:center; flex:none;}
+
+  #km-root table{width:100%; border-collapse:collapse; font-size:.82rem;
+    font-variant-numeric:tabular-nums; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+  #km-root th,#km-root td{padding:5px 6px; text-align:right; border-bottom:1px solid var(--line);}
+  #km-root th{color:var(--ink-soft); font-weight:600; font-family:inherit;}
+  #km-root th:first-child,#km-root td:first-child{text-align:left;}
+  #km-root td.total{font-weight:700;}
+  #km-root tr.newrow td{animation:flash .9s ease;}
+  #km-root tr.conv td{background:#eafaf0;}
+  @keyframes flash{from{background:#fff6d6;}to{background:transparent;}}
+  #km-root .hint{font-size:.8rem; color:var(--ink-soft); margin-top:9px;}
+  @media (prefers-reduced-motion: reduce){ #km-root tr.newrow td{animation:none;} }
+</style>
+
+  <h2>k-means clustering, step by step</h2>
+  <p class="sub">Watch each point join its nearest centre, then watch the centres slide to the middle of their group. Repeat until nothing moves.</p>
+
+  <div class="layout">
+    <div>
+      <div class="stage">
+        <div class="plotwrap"><canvas id="km-canvas"></canvas></div>
+        <div class="status" id="km-status"><span class="dot"></span><span id="km-status-text">Press <b>Step</b> to begin. First we pick starting centres.</span></div>
+      </div>
+
+      <div class="toolbar">
+        <button class="primary" id="km-step">Step &#9654;</button>
+        <button id="km-play">Play</button>
+        <button id="km-reset">Reset</button>
+        <button id="km-newdata">New data</button>
+        <span class="seg" role="group" aria-label="Number of clusters">
+          <span class="seg-label" style="padding:8px 8px 8px 10px;">Clusters</span>
+          <button data-k="2" id="km-k2">2</button>
+          <button data-k="3" id="km-k3" class="on">3</button>
+        </span>
+        <span class="speed">Speed
+          <input type="range" id="km-speed" min="1" max="5" value="3" aria-label="Animation speed">
+        </span>
+      </div>
+      <p class="hint" id="km-hint">Tip: before you start, click an empty spot on the chart to add your own point.</p>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <h3>Legend</h3>
+        <div class="legend" id="km-legend"></div>
+      </div>
+      <div class="card">
+        <h3>Within-cluster spread per iteration</h3>
+        <table>
+          <thead><tr id="km-thead"></tr></thead>
+          <tbody id="km-tbody"></tbody>
+        </table>
+        <p class="hint" style="margin-top:8px;">Each cluster value is the mean squared distance of its points to its centre (the cluster mean). <b>Total</b> is what k-means minimises &mdash; it can only go down, and it goes flat at convergence.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- palette (data clusters) ----
+  var COL = ["#e4572e", "#2e6fdb", "#2ea44f"];   // A red, B blue, C green
+  var NAME = ["A", "B", "C"];
+  var AMBER = "#f5c518", AMBER_EDGE = "#c99b00", EDGE = "#12395b", INK = "#12395b", SOFT = "#8a9bb0";
+
+  var DOM = 100;                 // data domain 0..100 on both axes
+  var canvas = document.getElementById("km-canvas");
+  var ctx = canvas.getContext("2d");
+  var statusEl = document.getElementById("km-status");
+  var statusText = document.getElementById("km-status-text");
+
+  // ---- state ----
+  var S = null;
+  var busy = false, auto = false;
+  var active = -1, lines = null;   // during assignment sweep
+  var seed = 12345;
+
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  var rand = mulberry32(seed);
+  function gauss(m,s){ var u=1-rand(), v=rand(); return m + s*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+
+  function genData(){
+    var blobs = [[30,68],[70,74],[55,28]], counts=[7,7,6], pts=[];
+    for(var b=0;b<blobs.length;b++){
+      for(var i=0;i<counts[b];i++){
+        pts.push({ x:clamp(gauss(blobs[b][0],9),4,96), y:clamp(gauss(blobs[b][1],9),4,96), c:-1 });
+      }
+    }
+    return pts;
+  }
+
+  function freshState(pts){
+    return { K:S?S.K:3, points:pts, centers:[], iter:0, history:[], prevAssign:null,
+             pendingConv:false, converged:false, phase:"ready" };
+  }
+
+  // ---- geometry / drawing ----
+  var PAD = 34, W=0, H=0, dpr=1;
+  function resize(){
+    var r = canvas.getBoundingClientRect();
+    dpr = window.devicePixelRatio || 1;
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W*dpr); canvas.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+  function mx(x){ return PAD + (x/DOM)*(W-2*PAD); }
+  function my(y){ return (H-PAD) - (y/DOM)*(H-2*PAD); }
+  function ux(px){ return clamp((px-PAD)/(W-2*PAD)*DOM,0,DOM); }
+  function uy(px){ return clamp((( (H-PAD)-px )/(H-2*PAD))*DOM,0,DOM); }
+
+  function dist2(ax,ay,bx,by){ var dx=ax-bx, dy=ay-by; return dx*dx+dy*dy; }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle="#eef2f7"; ctx.lineWidth=1;
+    for(var g=0; g<=DOM; g+=20){
+      ctx.beginPath(); ctx.moveTo(mx(g),my(0)); ctx.lineTo(mx(g),my(DOM)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(mx(0),my(g)); ctx.lineTo(mx(DOM),my(g)); ctx.stroke();
+    }
+    // axes
+    ctx.strokeStyle="#cfd8e3"; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(mx(0),my(0)); ctx.lineTo(mx(DOM),my(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mx(0),my(0)); ctx.lineTo(mx(0),my(DOM)); ctx.stroke();
+    ctx.fillStyle=SOFT; ctx.font="11px -apple-system,Segoe UI,Roboto,sans-serif";
+    ctx.textAlign="center"; ctx.fillText("Feature 1", (mx(0)+mx(DOM))/2, H-8);
+    ctx.save(); ctx.translate(11,(my(0)+my(DOM))/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText("Feature 2",0,0); ctx.restore();
+
+    // dashed distance lines for the active point
+    if(active>=0 && lines){
+      var p = S.points[active];
+      for(var k=0;k<lines.length;k++){
+        var L=lines[k], nearest=L.nearest;
+        ctx.save();
+        ctx.setLineDash([5,4]);
+        ctx.lineWidth = nearest?2.4:1.2;
+        ctx.strokeStyle = nearest?COL[k]:"#b9c4d1";
+        ctx.beginPath(); ctx.moveTo(mx(p.x),my(p.y)); ctx.lineTo(mx(S.centers[k].x),my(S.centers[k].y)); ctx.stroke();
+        ctx.restore();
+        // distance label at midpoint
+        var midx=(mx(p.x)+mx(S.centers[k].x))/2, midy=(my(p.y)+my(S.centers[k].y))/2;
+        ctx.font = (nearest?"bold ":"")+"10px ui-monospace,Menlo,Consolas,monospace";
+        ctx.fillStyle = nearest?COL[k]:"#9aa7b5"; ctx.textAlign="center";
+        ctx.fillText(Math.sqrt(L.d2).toFixed(1), midx, midy-2);
+      }
+    }
+
+    // points
+    for(var i=0;i<S.points.length;i++){
+      var pt=S.points[i];
+      var fill = pt.c<0 ? AMBER : COL[pt.c];
+      var edge = pt.c<0 ? AMBER_EDGE : "rgba(0,0,0,.18)";
+      var r = (i===active)?8.5:6.5;
+      ctx.beginPath(); ctx.arc(mx(pt.x),my(pt.y),r,0,2*Math.PI);
+      ctx.fillStyle=fill; ctx.fill();
+      ctx.lineWidth=(i===active)?2.2:1.2; ctx.strokeStyle=(i===active)?EDGE:edge; ctx.stroke();
+    }
+
+    // centroids (drawn as a ringed X — clearly not a data point)
+    for(var c=0;c<S.centers.length;c++){
+      var cx=mx(S.centers[c].x), cy=my(S.centers[c].y);
+      ctx.beginPath(); ctx.arc(cx,cy,11,0,2*Math.PI);
+      ctx.fillStyle="#fff"; ctx.fill();
+      ctx.lineWidth=2.4; ctx.strokeStyle=COL[c]; ctx.stroke();
+      ctx.strokeStyle=COL[c]; ctx.lineWidth=2.8; ctx.lineCap="round";
+      ctx.beginPath(); ctx.moveTo(cx-5,cy-5); ctx.lineTo(cx+5,cy+5);
+      ctx.moveTo(cx+5,cy-5); ctx.lineTo(cx-5,cy+5); ctx.stroke();
+      ctx.lineCap="butt";
+    }
+  }
+
+  // ---- algorithm steps ----
+  function pickCenters(){
+    var idx=[], pool=[];
+    for(var i=0;i<S.points.length;i++) pool.push(i);
+    for(var k=0;k<S.K;k++){ var j=Math.floor(rand()*pool.length); idx.push(pool.splice(j,1)[0]); }
+    S.centers = idx.map(function(i){ return {x:S.points[i].x, y:S.points[i].y}; });
+  }
+
+  function nearestCenter(p){
+    var best=0, bd=Infinity;
+    for(var k=0;k<S.centers.length;k++){
+      var d=dist2(p.x,p.y,S.centers[k].x,S.centers[k].y);
+      if(d<bd){ bd=d; best=k; }
+    }
+    return best;
+  }
+
+  function sleep(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+  function stepDelay(){ var v=+document.getElementById("km-speed").value; return [0,850,650,500,330,190][v]; }
+
+  async function animateAssignment(){
+    setStatus("go","Assignment: each point checks its distance to every centre, then joins the closest one.");
+    for(var i=0;i<S.points.length;i++){
+      active=i;
+      var p=S.points[i];
+      lines=[]; var best=0,bd=Infinity;
+      for(var k=0;k<S.centers.length;k++){
+        var d2=dist2(p.x,p.y,S.centers[k].x,S.centers[k].y);
+        lines.push({d2:d2, nearest:false});
+        if(d2<bd){bd=d2;best=k;}
+      }
+      lines[best].nearest=true;
+      draw();
+      if(!reduce) await sleep(stepDelay());
+      p.c = best;             // commit assignment (centres stay fixed this whole sweep)
+      draw();
+      if(!reduce) await sleep(Math.round(stepDelay()*0.35));
+    }
+    active=-1; lines=null; draw();
+  }
+
+  function computeSpread(){
+    var K=S.centers.length, sse=new Array(K).fill(0), n=new Array(K).fill(0);
+    for(var i=0;i<S.points.length;i++){
+      var p=S.points[i]; if(p.c<0) continue;
+      sse[p.c]+=dist2(p.x,p.y,S.centers[p.c].x,S.centers[p.c].y); n[p.c]++;
+    }
+    var per=[], total=0;
+    for(var k=0;k<K;k++){ per.push(n[k]?sse[k]/n[k]:0); total+=sse[k]; }
+    return {per:per, total:total};
+  }
+
+  function recordRow(convFlag){
+    S.iter++;
+    var sp = computeSpread();   // measured about the just-updated cluster means
+    S.history.push({iter:S.iter, per:sp.per, total:sp.total, conv:!!convFlag});
+    renderTable();
+  }
+
+  async function animateUpdate(){
+    var K=S.centers.length, sx=new Array(K).fill(0), sy=new Array(K).fill(0), n=new Array(K).fill(0);
+    for(var i=0;i<S.points.length;i++){ var p=S.points[i]; if(p.c<0)continue; sx[p.c]+=p.x; sy[p.c]+=p.y; n[p.c]++; }
+    var from = S.centers.map(function(c){return {x:c.x,y:c.y};});
+    var to = S.centers.map(function(c,k){ return n[k]? {x:sx[k]/n[k], y:sy[k]/n[k]} : {x:c.x,y:c.y}; });
+    setStatus("go","Update: each centre slides to the average position of its points (the mean — usually not on any point).");
+    if(reduce){ S.centers=to; draw(); return; }
+    var dur=650, t0=performance.now();
+    await new Promise(function(res){
+      function frame(now){
+        var t=Math.min(1,(now-t0)/dur), e=t<.5?2*t*t:-1+(4-2*t)*t; // easeInOut
+        for(var k=0;k<K;k++){ S.centers[k]={x:from[k].x+(to[k].x-from[k].x)*e, y:from[k].y+(to[k].y-from[k].y)*e}; }
+        draw();
+        if(t<1) requestAnimationFrame(frame); else res();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  // ---- step machine ----
+  async function doStep(){
+    if(busy || S.converged) return;
+    busy=true; setBtns();
+    if(S.phase==="ready"){
+      pickCenters(); S.phase="assign"; draw();
+      setStatus("go","Picked "+S.K+" starting centres at random from the data (the Forgy method). Step again to assign the points.");
+    } else if(S.phase==="assign"){
+      await animateAssignment();
+      var assign=S.points.map(function(p){return p.c;});
+      S.pendingConv = !!(S.prevAssign && assign.every(function(v,i){return v===S.prevAssign[i];}));
+      S.prevAssign=assign; S.phase="update";
+      setStatus("go","Every point now belongs to its nearest centre. Step to move each centre to its cluster's mean.");
+    } else if(S.phase==="update"){
+      await animateUpdate();
+      recordRow(S.pendingConv);
+      if(S.pendingConv){
+        S.converged=true;
+        setStatus("done","Converged — the assignment stopped changing, so this spread matches the row above. Done.");
+      } else {
+        S.phase="assign";
+        setStatus("go","Iteration "+S.iter+" spread recorded on the right. Step to re-assign every point to its nearest centre.");
+      }
+    }
+    busy=false; setBtns();
+    if(auto && !S.converged){ await sleep(reduce?250:520); doStep(); }
+    else if(auto && S.converged){ auto=false; document.getElementById("km-play").textContent="Play"; setBtns(); }
+  }
+
+  // ---- UI plumbing ----
+  function setStatus(cls,msg){ statusEl.className="status"+(cls?" "+cls:""); statusText.innerHTML=msg; }
+  function setBtns(){
+    document.getElementById("km-step").disabled = busy || S.converged;
+    document.getElementById("km-play").disabled = S.converged && !auto;
+    document.getElementById("km-hint").style.display = (S.phase==="ready" && S.history.length===0) ? "block":"none";
+  }
+
+  function renderLegend(){
+    var el=document.getElementById("km-legend"), html="";
+    html+='<div class="row"><span class="swatch" style="background:'+AMBER+';border-color:'+AMBER_EDGE+'"></span>Unassigned point</div>';
+    for(var k=0;k<S.K;k++){
+      html+='<div class="row"><span class="swatch" style="background:'+COL[k]+'"></span>Cluster '+NAME[k]+' point</div>';
+    }
+    html+='<div class="row"><span class="xmark" style="color:'+INK+'">&#10005;</span>Cluster centre (a mean, not a data point)</div>';
+    el.innerHTML=html;
+  }
+  function renderThead(){
+    var tr=document.getElementById("km-thead"), h="<th>Iter</th>";
+    for(var k=0;k<S.K;k++) h+='<th style="color:'+COL[k]+'">'+NAME[k]+'</th>';
+    h+="<th>Total</th>"; tr.innerHTML=h;
+  }
+  function renderTable(){
+    renderThead();
+    var body=document.getElementById("km-tbody"), rows="";
+    for(var r=0;r<S.history.length;r++){
+      var H=S.history[r], cls=[]; if(r===S.history.length-1)cls.push("newrow"); if(H.conv)cls.push("conv");
+      var tds="<td>"+H.iter+"</td>";
+      for(var k=0;k<S.K;k++) tds+="<td>"+H.per[k].toFixed(1)+"</td>";
+      tds+='<td class="total">'+H.total.toFixed(0)+"</td>";
+      rows+='<tr class="'+cls.join(" ")+'">'+tds+"</tr>";
+    }
+    body.innerHTML=rows;
+  }
+
+  function hardReset(newPts){
+    auto=false; busy=false; active=-1; lines=null;
+    document.getElementById("km-play").textContent="Play";
+    if(newPts){ S=freshState(genData()); }
+    else { var pts=S.points.map(function(p){return {x:p.x,y:p.y,c:-1};}); S=freshState(pts); }
+    renderLegend(); renderThead(); document.getElementById("km-tbody").innerHTML="";
+    setStatus("","Press <b>Step</b> to begin. First we pick starting centres.");
+    setBtns(); draw();
+  }
+
+  // events
+  document.getElementById("km-step").addEventListener("click", doStep);
+  document.getElementById("km-play").addEventListener("click", function(){
+    if(S.converged) return;
+    auto=!auto; this.textContent=auto?"Pause":"Play"; setBtns();
+    if(auto && !busy) doStep();
+  });
+  document.getElementById("km-reset").addEventListener("click", function(){ hardReset(false); });
+  document.getElementById("km-newdata").addEventListener("click", function(){ seed=(seed*1664525+1013904223)>>>0; rand=mulberry32(seed); hardReset(true); });
+  function setK(k){
+    document.getElementById("km-k2").classList.toggle("on",k===2);
+    document.getElementById("km-k3").classList.toggle("on",k===3);
+    if(!S) return; S.K=k; hardReset(false);
+  }
+  document.getElementById("km-k2").addEventListener("click", function(){ setK(2); });
+  document.getElementById("km-k3").addEventListener("click", function(){ setK(3); });
+
+  canvas.addEventListener("click", function(e){
+    if(!(S.phase==="ready" && S.history.length===0) || busy) return;
+    var r=canvas.getBoundingClientRect();
+    S.points.push({ x:ux(e.clientX-r.left), y:uy(e.clientY-r.top), c:-1 });
+    draw();
+  });
+
+  window.addEventListener("resize", resize);
+  window.addEventListener("load", resize);
+
+  // init
+  S = freshState(genData());
+  document.getElementById("km-speed"); // ensure exists
+  resize();
+  hardReset(false);
+})();
+</script>
+</div>
+</body>
+</html>

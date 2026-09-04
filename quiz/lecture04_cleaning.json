@@ -1,0 +1,132 @@
+[
+  {
+    "question": "An ML model is trained on a materials dataset full of errors and missing values. What is the most likely result?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "The model will automatically fix the errors while training.",
+        "correct": false,
+        "feedback": "Models don't repair data for you — they learn whatever patterns are present."
+      },
+      {
+        "answer": "The model may learn misleading patterns and generalise poorly.",
+        "correct": true,
+        "feedback": "Correct — garbage in, garbage out. Bad inputs give an unreliable model."
+      },
+      {
+        "answer": "Errors and missing values have no effect on performance.",
+        "correct": false,
+        "feedback": "They usually do affect performance, sometimes badly."
+      },
+      {
+        "answer": "Training will always crash straight away.",
+        "correct": false,
+        "feedback": "It may run fine and still give poor results — which can be harder to notice."
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a standard way to deal with missing values?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Drop the rows or columns that contain gaps.",
+        "correct": false,
+        "feedback": "This is a standard (if wasteful) option."
+      },
+      {
+        "answer": "Impute the gaps, e.g. with the column mean.",
+        "correct": false,
+        "feedback": "This is a standard option."
+      },
+      {
+        "answer": "Use a model that handles missing data, such as XGBoost.",
+        "correct": false,
+        "feedback": "This is a standard option."
+      },
+      {
+        "answer": "Secretly change nearby correct values so nothing looks missing.",
+        "correct": true,
+        "feedback": "Right — never alter valid data to hide gaps. Drop, impute, or use a model that supports NaN."
+      }
+    ]
+  },
+  {
+    "question": "A temperature column (in Kelvin) contains the value -2000. What is the best first response?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Keep it; the model will handle it.",
+        "correct": false,
+        "feedback": "A physically impossible value should be investigated, not passed through."
+      },
+      {
+        "answer": "Recognise it as physically impossible (Kelvin can't be negative) and investigate it.",
+        "correct": true,
+        "feedback": "Correct — domain knowledge is your best tool for spotting incorrect data."
+      },
+      {
+        "answer": "Replace every temperature in the column with 0.",
+        "correct": false,
+        "feedback": "That would destroy the correct values too."
+      },
+      {
+        "answer": "Delete the whole dataset.",
+        "correct": false,
+        "feedback": "One bad value doesn't invalidate the whole table."
+      }
+    ]
+  },
+  {
+    "question": "You find one material with an unusually high fracture toughness compared with all the others. What should you do?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "Delete it immediately — outliers are always errors.",
+        "correct": false,
+        "feedback": "In materials discovery an outlier can be a genuine, exciting result."
+      },
+      {
+        "answer": "Verify it against another source before deciding, since it may be a real discovery.",
+        "correct": true,
+        "feedback": "Correct — error outliers can be dropped, but real ones should be investigated."
+      },
+      {
+        "answer": "Replace it with the average of the other values.",
+        "correct": false,
+        "feedback": "That would erase a possibly important finding."
+      },
+      {
+        "answer": "Ignore data cleaning entirely.",
+        "correct": false,
+        "feedback": "Cleaning still matters — the point is to verify before removing."
+      }
+    ]
+  },
+  {
+    "question": "A numeric column is stored as text, with entries like 27, '-', 30, 'N/A' and 'null'. What is happening, and how do you fix it?",
+    "type": "multiple_choice",
+    "answers": [
+      {
+        "answer": "pandas treats the column as numeric automatically; nothing to do.",
+        "correct": false,
+        "feedback": "The text markers force the whole column to stay as text."
+      },
+      {
+        "answer": "The column is text (object); replace the markers with np.nan, then use pd.to_numeric(..., errors='coerce').",
+        "correct": true,
+        "feedback": "Correct — convert the fake-missing markers to NaN, then coerce to numbers."
+      },
+      {
+        "answer": "You must delete the entire column.",
+        "correct": false,
+        "feedback": "No need — it can be cleaned and converted."
+      },
+      {
+        "answer": "Python already recognises '-' and 'null' as missing values.",
+        "correct": false,
+        "feedback": "It does not — you must convert them to NaN yourself."
+      }
+    ]
+  }
+]

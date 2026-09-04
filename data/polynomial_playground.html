@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polynomial fitting playground — MLE5217</title>
+<style>
+  :root{
+    --ink:#12283a; --ink-soft:#4a5f70; --line:#d7dee4; --bg:#f7f9fb;
+    --panel:#ffffff; --accent:#e8853b;           /* NUS-style warm accent bar   */
+    --train:#1f6fb2; --test:#e8853b; --fit:#7b3fb5; --true:#9aa7b1;
+    --good:#2e8b3d; --bad:#e03131;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:22px 18px 40px}
+  .eyebrow{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin:0 0 4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:26px; height:3px; background:var(--accent); border-radius:2px}
+  h1{font-size:26px; margin:0 0 4px; letter-spacing:-.01em; font-weight:800}
+  .sub{color:var(--ink-soft); margin:0 0 18px; font-size:15px; max-width:62ch}
+
+  .grid{display:grid; grid-template-columns:270px 1fr; gap:18px}
+  @media(max-width:760px){ .grid{grid-template-columns:1fr} }
+
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px}
+  .panel h2{font-size:13px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--ink-soft); margin:0 0 14px; font-weight:700}
+
+  .ctrl{margin-bottom:16px}
+  .ctrl:last-child{margin-bottom:0}
+  .ctrl label{display:flex; justify-content:space-between; align-items:baseline;
+    font-size:14px; font-weight:600; margin-bottom:6px}
+  .ctrl label .val{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-weight:700; font-size:14px; color:var(--train);
+    background:#eef4f9; padding:1px 8px; border-radius:6px; font-variant-numeric:tabular-nums}
+  .hint{font-size:12px; color:var(--ink-soft); margin-top:4px}
+  input[type=range]{width:100%; accent-color:var(--train); height:22px}
+  .ctrl.star input[type=range]{accent-color:var(--fit)}
+  .ctrl.star label .val{color:var(--fit); background:#f1ebf8}
+
+  .checks{display:flex; flex-direction:column; gap:10px; margin-top:4px}
+  .chk{display:flex; align-items:center; gap:9px; font-size:14px; font-weight:600; cursor:pointer}
+  .chk input{width:17px; height:17px; accent-color:var(--test)}
+  .swatch{width:12px; height:12px; border-radius:3px; display:inline-block}
+
+  button{
+    width:100%; margin-top:16px; padding:10px 12px; font-size:14px; font-weight:700;
+    color:#fff; background:var(--ink); border:0; border-radius:9px; cursor:pointer;
+    letter-spacing:.01em}
+  button:hover{background:#0c1c2a}
+  button:focus-visible, input:focus-visible{outline:2.5px solid var(--fit); outline-offset:2px}
+
+  .plotcard{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:14px 14px 8px; margin-bottom:16px}
+  .plotcard .cap{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px}
+  .plotcard .cap h3{font-size:14px; margin:0; font-weight:700}
+  .legend{display:flex; gap:14px; font-size:12px; color:var(--ink-soft); flex-wrap:wrap}
+  .legend span{display:inline-flex; align-items:center; gap:5px}
+  canvas{width:100%; display:block}
+
+  .readout{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:520px){ .readout{grid-template-columns:1fr} }
+  .metrics{border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--panel)}
+  .metrics h4{margin:0 0 10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:7px}
+  .metrics.train h4{color:var(--train)} .metrics.test h4{color:var(--test)}
+  .metrics.off{opacity:.4}
+  .mrow{display:flex; justify-content:space-between; align-items:baseline; padding:4px 0;
+    border-top:1px dashed var(--line); font-size:14px}
+  .mrow:first-of-type{border-top:0}
+  .mrow .num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-weight:700; font-size:16px; font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px; padding:11px 14px; border-radius:10px; background:#eef4f9;
+    border-left:4px solid var(--train); font-size:14px; color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">MLE5217 · Interactive</p>
+  <h1>Polynomial fitting playground</h1>
+  <p class="sub">Make some data, then try to fit it. Turn the <strong>fit degree</strong> up and down and watch
+    what happens to the curve, the leftovers (residuals), and the scores — on data the model trained on,
+    and on data it has never seen.</p>
+
+  <div class="grid">
+    <!-- ============ CONTROLS ============ -->
+    <div class="panel" aria-label="controls">
+      <h2>The data</h2>
+      <div class="ctrl">
+        <label>True pattern complexity <span class="val" id="trueDegV">3</span></label>
+        <input type="range" id="trueDeg" min="1" max="6" step="1" value="3">
+        <div class="hint">The real shape hiding behind the dots.</div>
+      </div>
+      <div class="ctrl">
+        <label>Noise <span class="val" id="noiseV">8</span></label>
+        <input type="range" id="noise" min="0" max="25" step="1" value="8">
+        <div class="hint">How much the measurements scatter.</div>
+      </div>
+      <div class="ctrl">
+        <label>Training points <span class="val" id="nTrainV">40</span></label>
+        <input type="range" id="nTrain" min="10" max="150" step="5" value="40">
+      </div>
+
+      <h2 style="margin-top:22px">The fit</h2>
+      <div class="ctrl star">
+        <label>Fit degree <span class="val" id="fitDegV">3</span></label>
+        <input type="range" id="fitDeg" min="1" max="15" step="1" value="3">
+        <div class="hint">Your model's flexibility. This is the knob to play with.</div>
+      </div>
+
+      <div class="checks">
+        <label class="chk"><input type="checkbox" id="showTest">
+          <span class="swatch" style="background:var(--test)"></span> Show test data</label>
+        <label class="chk"><input type="checkbox" id="showTrue">
+          <span class="swatch" style="background:var(--true)"></span> Show true pattern</label>
+      </div>
+
+      <button id="resample">New sample</button>
+    </div>
+
+    <!-- ============ PLOTS + METRICS ============ -->
+    <div>
+      <div class="plotcard">
+        <div class="cap">
+          <h3>Data &amp; fitted curve</h3>
+          <div class="legend">
+            <span><span class="swatch" style="background:var(--train)"></span>training</span>
+            <span id="lgTest" style="display:none"><span class="swatch" style="background:var(--test)"></span>test</span>
+            <span><span class="swatch" style="background:var(--fit)"></span>fit</span>
+            <span id="lgTrue" style="display:none"><span class="swatch" style="background:var(--true)"></span>true</span>
+          </div>
+        </div>
+        <canvas id="mainPlot" height="330"></canvas>
+      </div>
+
+      <div class="plotcard">
+        <div class="cap">
+          <h3>Residuals <span style="font-weight:400;color:var(--ink-soft)">(actual − predicted)</span></h3>
+          <div class="legend"><span>A pattern here = the fit is missing something.</span></div>
+        </div>
+        <canvas id="residPlot" height="200"></canvas>
+      </div>
+
+      <div class="readout">
+        <div class="metrics train">
+          <h4><span class="swatch" style="background:var(--train)"></span> Training data</h4>
+          <div class="mrow"><span>R²</span><span class="num" id="trR2">–</span></div>
+          <div class="mrow"><span>RMSE</span><span class="num" id="trRMSE">–</span></div>
+          <div class="mrow"><span>MAE</span><span class="num" id="trMAE">–</span></div>
+        </div>
+        <div class="metrics test off" id="testCard">
+          <h4><span class="swatch" style="background:var(--test)"></span> Test data</h4>
+          <div class="mrow"><span>R²</span><span class="num" id="teR2">–</span></div>
+          <div class="mrow"><span>RMSE</span><span class="num" id="teRMSE">–</span></div>
+          <div class="mrow"><span>MAE</span><span class="num" id="teMAE">–</span></div>
+        </div>
+      </div>
+      <div class="verdict" id="verdict">Tip: switch on <strong>test data</strong> to see how well the fit generalizes.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ---------- tiny seeded RNG (mulberry32) + Gaussian ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(rand){ // Box-Muller
+  let u=0,v=0; while(u===0)u=rand(); while(v===0)v=rand();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+/* ---------- polynomial least squares (x scaled to [-1,1]) ---------- */
+function polyval(coeffs,s){let p=1,y=0;for(let j=0;j<coeffs.length;j++){y+=coeffs[j]*p;p*=s;}return y;}
+function solve(A,b){ // Gaussian elimination w/ partial pivoting; A is m x m, b length m
+  const m=b.length, M=A.map((r,i)=>r.concat(b[i]));
+  for(let c=0;c<m;c++){
+    let piv=c; for(let r=c+1;r<m;r++) if(Math.abs(M[r][c])>Math.abs(M[piv][c])) piv=r;
+    [M[c],M[piv]]=[M[piv],M[c]];
+    const d=M[c][c]||1e-12;
+    for(let j=c;j<=m;j++) M[c][j]/=d;
+    for(let r=0;r<m;r++){ if(r===c) continue; const f=M[r][c];
+      for(let j=c;j<=m;j++) M[r][j]-=f*M[c][j]; }
+  }
+  return M.map(r=>r[m]);
+}
+function polyfit(xs,ys,deg){
+  const n=xs.length, m=deg+1;
+  const AtA=Array.from({length:m},()=>new Array(m).fill(0)), Aty=new Array(m).fill(0);
+  for(let i=0;i<n;i++){
+    const s=2*xs[i]-1; const row=new Array(m); let p=1;
+    for(let j=0;j<m;j++){row[j]=p;p*=s;}
+    for(let a=0;a<m;a++){ Aty[a]+=row[a]*ys[i];
+      for(let b=0;b<m;b++) AtA[a][b]+=row[a]*row[b]; }
+  }
+  for(let d=0;d<m;d++) AtA[d][d]+=1e-8;        // tiny ridge -> always solvable
+  return solve(AtA,Aty);
+}
+function predict(beta,x){return polyval(beta,2*x-1);}
+function score(beta,pts){
+  const n=pts.length; let ssr=0,sae=0,mean=0;
+  for(const p of pts) mean+=p.y; mean/=n;
+  let sst=0;
+  for(const p of pts){const r=p.y-predict(beta,p.x); ssr+=r*r; sae+=Math.abs(r); sst+=(p.y-mean)**2;}
+  return {rmse:Math.sqrt(ssr/n), mae:sae/n, r2:1-ssr/(sst||1e-9)};
+}
+
+/* ---------- data generation ---------- */
+const N_TEST=40;
+function makeData(st){
+  const rand=mulberry32(st.seed);
+  const coeffs=[]; for(let i=0;i<=st.trueDeg;i++) coeffs.push(rand()*2-1);
+  // map raw true output to a friendly [10,90] range
+  let lo=Infinity,hi=-Infinity;
+  for(let i=0;i<200;i++){const v=polyval(coeffs,2*(i/199)-1); if(v<lo)lo=v; if(v>hi)hi=v;}
+  const span=(hi-lo)||1;
+  const trueY=x=>10+80*(polyval(coeffs,2*x-1)-lo)/span;
+  const draw=n=>{const a=[];for(let i=0;i<n;i++){const x=rand();a.push({x,y:trueY(x)+st.noise*gauss(rand)});}return a;};
+  return {trueY, train:draw(st.nTrain), test:draw(N_TEST)};
+}
+
+/* ---------- canvas plotting helpers ---------- */
+function setup(cv){
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth, h=cv.clientHeight;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  return {ctx,w,h};
+}
+function axes(ctx,w,h,xr,yr,ylab){
+  const L=48,R=12,T=10,B=28;
+  const px=x=>L+(x-xr[0])/(xr[1]-xr[0])*(w-L-R);
+  const py=y=>h-B-(y-yr[0])/(yr[1]-yr[0])*(h-T-B);
+  ctx.strokeStyle="#e4e9ee"; ctx.fillStyle="#8496a4"; ctx.lineWidth=1;
+  ctx.font="11px system-ui,sans-serif"; ctx.textAlign="right"; ctx.textBaseline="middle";
+  for(let i=0;i<=4;i++){const y=yr[0]+(yr[1]-yr[0])*i/4;
+    ctx.beginPath();ctx.moveTo(L,py(y));ctx.lineTo(w-R,py(y));ctx.stroke();
+    ctx.fillText(y.toFixed(0),L-6,py(y));}
+  ctx.textAlign="center"; ctx.textBaseline="top";
+  for(let i=0;i<=5;i++){const x=xr[0]+(xr[1]-xr[0])*i/5;
+    ctx.fillText(x.toFixed(1),px(x),h-B+7);}
+  ctx.save();ctx.translate(12,(T+h-B)/2);ctx.rotate(-Math.PI/2);
+  ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#607385";
+  ctx.font="12px system-ui,sans-serif";ctx.fillText(ylab,0,0);ctx.restore();
+  return {px,py,L,R,T,B};
+}
+function dots(ctx,m,pts,color){
+  ctx.fillStyle=color;
+  for(const p of pts){ctx.beginPath();ctx.arc(m.px(p.x),m.py(p.y),3.2,0,2*Math.PI);ctx.fill();}
+}
+function clipRect(ctx,m,w,h){ctx.save();ctx.beginPath();
+  ctx.rect(m.L,m.T,w-m.L-m.R,h-m.T-m.B);ctx.clip();}
+
+/* ---------- state + wiring ---------- */
+const el=id=>document.getElementById(id);
+const st={trueDeg:3,noise:8,nTrain:40,fitDeg:3,showTest:false,showTrue:false,seed:12345};
+let data=makeData(st);
+
+function render(){
+  // fit on training data
+  const beta=polyfit(data.train.map(p=>p.x),data.train.map(p=>p.y),st.fitDeg);
+  const trM=score(beta,data.train);
+  const teM=score(beta,data.test);
+
+  /* ---- main plot ---- */
+  const mp=setup(el("mainPlot"));
+  let ys=data.train.map(p=>p.y);
+  if(st.showTest) ys=ys.concat(data.test.map(p=>p.y));
+  let ylo=Math.min(...ys), yhi=Math.max(...ys); const pad=(yhi-ylo)*0.12||10;
+  const yr=[ylo-pad,yhi+pad];
+  const m=axes(mp.ctx,mp.w,mp.h,[0,1],yr,"target property (y)");
+  clipRect(mp.ctx,m,mp.w,mp.h);
+  if(st.showTrue){ // true pattern, dashed
+    mp.ctx.strokeStyle=getCSS("--true");mp.ctx.lineWidth=2;mp.ctx.setLineDash([6,5]);
+    mp.ctx.beginPath();
+    for(let i=0;i<=160;i++){const x=i/160;const y=data.trueY(x);i?mp.ctx.lineTo(m.px(x),m.py(y)):mp.ctx.moveTo(m.px(x),m.py(y));}
+    mp.ctx.stroke();mp.ctx.setLineDash([]);
+  }
+  // fit curve
+  mp.ctx.strokeStyle=getCSS("--fit");mp.ctx.lineWidth=2.6;mp.ctx.beginPath();
+  for(let i=0;i<=240;i++){const x=i/240;const y=predict(beta,x);i?mp.ctx.lineTo(m.px(x),m.py(y)):mp.ctx.moveTo(m.px(x),m.py(y));}
+  mp.ctx.stroke();
+  mp.ctx.restore();
+  if(st.showTest) dots(mp.ctx,m,data.test,getCSS("--test"));
+  dots(mp.ctx,m,data.train,getCSS("--train"));
+
+  /* ---- residual plot ---- */
+  const rp=setup(el("residPlot"));
+  const trRes=data.train.map(p=>({x:p.x,y:p.y-predict(beta,p.x)}));
+  const teRes=data.test.map(p=>({x:p.x,y:p.y-predict(beta,p.x)}));
+  let rvals=trRes.map(p=>Math.abs(p.y));
+  if(st.showTest) rvals=rvals.concat(teRes.map(p=>Math.abs(p.y)));
+  const rmax=Math.max(1,...rvals)*1.15;
+  const rm=axes(rp.ctx,rp.w,rp.h,[0,1],[-rmax,rmax],"residual");
+  rp.ctx.strokeStyle="#b9c4cd";rp.ctx.lineWidth=1.4;
+  rp.ctx.beginPath();rp.ctx.moveTo(rm.L,rm.py(0));rp.ctx.lineTo(rp.w-rm.R,rm.py(0));rp.ctx.stroke();
+  clipRect(rp.ctx,rm,rp.w,rp.h);
+  if(st.showTest) dots(rp.ctx,rm,teRes,getCSS("--test"));
+  dots(rp.ctx,rm,trRes,getCSS("--train"));
+  rp.ctx.restore();
+
+  /* ---- metrics ---- */
+  el("trR2").textContent=trM.r2.toFixed(3);
+  el("trRMSE").textContent=trM.rmse.toFixed(2);
+  el("trMAE").textContent=trM.mae.toFixed(2);
+  const card=el("testCard");
+  if(st.showTest){
+    card.classList.remove("off");
+    el("teR2").textContent=teM.r2.toFixed(3);
+    el("teRMSE").textContent=teM.rmse.toFixed(2);
+    el("teMAE").textContent=teM.mae.toFixed(2);
+    color(el("teR2"),teM.r2);
+  } else {
+    card.classList.add("off");
+    el("teR2").textContent="–";el("teRMSE").textContent="–";el("teMAE").textContent="–";
+  }
+  color(el("trR2"),trM.r2);
+
+  /* ---- verdict ---- */
+  const v=el("verdict");
+  if(!st.showTest){
+    v.style.borderColor=getCSS("--train");
+    v.innerHTML="Tip: switch on <strong>test data</strong> to see how well the fit generalizes.";
+  } else if(trM.r2<0.6){
+    v.style.borderColor=getCSS("--bad");
+    v.innerHTML="<strong>Underfitting.</strong> The curve is too simple to follow the pattern — try a higher fit degree.";
+  } else if(trM.r2-teM.r2>0.25 || teM.r2<0.5){
+    v.style.borderColor=getCSS("--bad");
+    v.innerHTML="<strong>Overfitting.</strong> Great on training, poor on test — try a lower fit degree.";
+  } else {
+    v.style.borderColor=getCSS("--good");
+    v.innerHTML="<strong>Nice balance.</strong> The fit does well on training and test data alike.";
+  }
+}
+function color(node,r2){ node.style.color = r2<0.5?getCSS("--bad"):(r2>0.85?getCSS("--good"):getCSS("--ink")); }
+function getCSS(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+
+/* ---- events ---- */
+function bindRange(id,key,fmt){el(id).addEventListener("input",e=>{
+  st[key]=+e.target.value; el(id+"V").textContent=(fmt?fmt(st[key]):st[key]);
+  if(key==="trueDeg"||key==="noise"||key==="nTrain") data=makeData(st);
+  render();});}
+bindRange("trueDeg","trueDeg"); bindRange("noise","noise");
+bindRange("nTrain","nTrain"); bindRange("fitDeg","fitDeg");
+el("showTest").addEventListener("change",e=>{st.showTest=e.target.checked;
+  el("lgTest").style.display=st.showTest?"inline-flex":"none"; render();});
+el("showTrue").addEventListener("change",e=>{st.showTrue=e.target.checked;
+  el("lgTrue").style.display=st.showTrue?"inline-flex":"none"; render();});
+el("resample").addEventListener("click",()=>{st.seed=(st.seed*1103515245+12345)>>>0; data=makeData(st); render();});
+window.addEventListener("resize",render);
+render();
+</script>
+</body>
+</html>

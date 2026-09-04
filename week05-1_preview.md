@@ -2,7 +2,7 @@
 title: "What to expect this week"
 ---
 
-# Week 3 — What to expect 🤔
+# Week 5 — What to expect 🤔
 
 **Featurization**
 

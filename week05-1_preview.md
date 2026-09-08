@@ -52,13 +52,14 @@ When we are using the CBFV package we will import it to our notebook as
 *from CBFV import composition*
 
 
-Additionally, there are other featurizers such as [Automatminer](https://hackingmaterials.lbl.gov/automatminer/) which is good to know - but we will not be using it during our class. 
+Additionally, there are other featurizers such as [Automatminer](https://hackingmaterials.lbl.gov/automatminer/) which is good to know - but we will not Proass.
 
+## 👇Datasets for In-class Problem
 
-:::{note}
+[Dataset for featurization](data/lec05_Thermal_Cond.csv)
 
-
-:::
+Download this dataset and add it into your MLE5217 folder - where your jupyter notebooks are also stored. 
+If you are not sure where this is, open Anaconda Prompt activate your mle5217 environment (conda activate mle5217) - look at the path (C:xxx/xx..) this is where your location would be.
 
 
 :::{admonition} By the end of this lesson you should be able to

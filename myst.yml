@@ -52,6 +52,9 @@ project:
     - title: "Week 5 — Featurization"
       children:
         - file: week05-1_preview.md
+        #- file: week05-2_featurization_concepts.ipynb
+        #- file: week05-3_inclass_problem.ipynb
+        #- file: week05-periodic_table.ipynb
 site:
   template: book-theme
    

@@ -52,7 +52,7 @@ When we are using the CBFV package we will import it to our notebook as
 *from CBFV import composition*
 
 
-Additionally, there are other featurizers such as [Automatminer](https://hackingmaterials.lbl.gov/automatminer/) which is good to know - but we will not Proass.
+Additionally, there are other featurizers such as [Automatminer](https://hackingmaterials.lbl.gov/automatminer/) which is good to know - but we will not be using this in class.
 
 ## 👇Datasets for In-class Problem
 

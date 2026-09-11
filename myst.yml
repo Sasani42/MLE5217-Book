@@ -46,15 +46,22 @@ project:
       children:
         - file: week04-1_preview.md
         - file: week04-2_data_cleaning.ipynb
-        - file: week03-3_Cleaning.ipynb
+        - file: week04-3_Cleaning.ipynb
         - file: week04-4_kmeans_clustering.ipynb
         - file: week04-5_HW_Atomic_radii.ipynb
     - title: "Week 5 — Featurization"
       children:
         - file: week05-1_preview.md
-        #- file: week05-2_featurization_concepts.ipynb
-        #- file: week05-3_inclass_problem.ipynb
-        #- file: week05-periodic_table.ipynb
+        - file: week05-2_featurization_concepts.ipynb
+        - file: week05-3_inclass_problem.ipynb
+        - file: week05-4_One_hot.ipynb
+    - title: "Week 6 — Bias Vs Variance, and Cross-validation"
+      children:
+        - file: week06-1_preview.md
+        #- file: week06-2_bias_variance_tradeoff.ipynb
+        #- file: week06-2_bias_variance_code.ipynb
+        #- file: week06-3_cross_validation.ipynb
+
 site:
   template: book-theme
    

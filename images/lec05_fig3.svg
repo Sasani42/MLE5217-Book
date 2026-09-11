@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 588" font-family="Helvetica,Arial,sans-serif">
+<defs><marker id="ar3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#9ca3af"/></marker></defs>
+<rect width="760" height="588" fill="#ffffff"/>
+<text x="28" y="32" font-size="18" font-weight="700" fill="#111827">Step 2 &#8212; from a handful of element vectors to one fixed-length material vector</text>
+
+<line x1="44" y1="58" x2="44" y2="486" stroke="#e5e7eb" stroke-width="2"/>
+
+<circle cx="44" cy="76" r="13" fill="#312e81"/><text x="44" y="81" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">1</text>
+<text x="76" y="70" font-size="12.5" font-weight="700" fill="#111827">Start from the formula</text>
+<rect x="76" y="80" width="96" height="38" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+<text x="124" y="105" font-size="18" text-anchor="middle" fill="#111827">SiO&#8322;</text>
+<text x="196" y="105" font-size="11.5" fill="#6b7280">which elements, and how many of each &#8212; that is all a formula holds</text>
+
+<circle cx="44" cy="156" r="13" fill="#312e81"/><text x="44" y="161" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">2</text>
+<text x="76" y="150" font-size="12.5" font-weight="700" fill="#111827">Convert to fractional composition</text>
+<rect x="76" y="160" width="230" height="38" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+<text x="191" y="185" font-size="14" text-anchor="middle" fill="#312e81" font-family="monospace">Si 0.333&#160;&#160;&#160;O 0.667</text>
+<text x="326" y="178" font-size="11.5" fill="#6b7280">Weights O twice as heavily as Si, and always sums to 1, so</text>
+<text x="326" y="194" font-size="11.5" fill="#6b7280">SiO&#8322; and Si&#8322;O&#8324; can no longer look like different materials.</text>
+
+<circle cx="44" cy="240" r="13" fill="#312e81"/><text x="44" y="245" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">3</text>
+<text x="76" y="234" font-size="12.5" font-weight="700" fill="#111827">Pull the element vector for each element present</text>
+<rect x="76" y="246" width="330" height="70" rx="6" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="76" y1="272" x2="406" y2="272" stroke="#e5e7eb"/>
+<line x1="146" y1="246" x2="146" y2="316" stroke="#e5e7eb"/>
+<text x="110" y="264" font-size="10.5" text-anchor="middle" fill="#9ca3af">weight</text>
+<text x="200" y="264" font-size="10.5" text-anchor="middle" fill="#9ca3af">mass</text>
+<text x="268" y="264" font-size="10.5" text-anchor="middle" fill="#9ca3af">e.neg.</text>
+<text x="336" y="264" font-size="10.5" text-anchor="middle" fill="#9ca3af">radius</text>
+<text x="386" y="264" font-size="10.5" text-anchor="middle" fill="#9ca3af">&#8230;</text>
+<text x="88" y="292" font-size="12" fill="#111827">Si</text><text x="138" y="292" font-size="11.5" text-anchor="end" fill="#6b7280" font-family="monospace">0.333</text>
+<text x="200" y="292" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">28.09</text>
+<text x="268" y="292" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">1.90</text>
+<text x="336" y="292" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">111</text>
+<text x="88" y="310" font-size="12" fill="#111827">O</text><text x="138" y="310" font-size="11.5" text-anchor="end" fill="#6b7280" font-family="monospace">0.667</text>
+<text x="200" y="310" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">16.00</text>
+<text x="268" y="310" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">3.44</text>
+<text x="336" y="310" font-size="11.5" text-anchor="middle" fill="#111827" font-family="monospace">66</text>
+<text x="426" y="276" font-size="11.5" fill="#6b7280">Two rows here. A five-element alloy would</text>
+<text x="426" y="292" font-size="11.5" fill="#6b7280">give five. The model cannot accept a</text>
+<text x="426" y="308" font-size="11.5" fill="#6b7280">changing number of rows &#8212; so we summarise.</text>
+
+<circle cx="44" cy="358" r="13" fill="#312e81"/><text x="44" y="363" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">4</text>
+<text x="76" y="352" font-size="12.5" font-weight="700" fill="#111827">Collapse each property column into statistics, weighted by composition</text>
+<rect x="76" y="364" width="330" height="58" rx="6" fill="#fffbeb" stroke="#fde68a"/>
+<text x="90" y="386" font-size="11.5" fill="#92400e">for the electronegativity column:</text>
+<text x="90" y="406" font-size="11.5" fill="#78350f" font-family="monospace">mean 2.93 &#160;spread 0.73 &#160;min 1.90 &#160;max 3.44 &#160;range 1.54</text>
+<text x="426" y="380" font-size="11.5" fill="#6b7280">The mean alone would hide the contrast</text>
+<text x="426" y="396" font-size="11.5" fill="#6b7280">between the two elements &#8212; and that contrast</text>
+<text x="426" y="412" font-size="11.5" fill="#6b7280">is what makes the bond ionic. Hence range</text>
+<text x="426" y="428" font-size="11.5" fill="#6b7280">and spread, not just the average.</text>
+
+<circle cx="44" cy="462" r="13" fill="#065f46"/><text x="44" y="467" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">5</text>
+<text x="76" y="456" font-size="12.5" font-weight="700" fill="#111827">Concatenate every statistic of every property</text>
+<rect x="76" y="468" width="500" height="42" rx="6" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="326" y="494" font-size="13" text-anchor="middle" fill="#065f46" font-family="monospace">[0.333, 0.667, 19.4, 5.7, 2.93, 0.73, 1.54, 81.0, ... ]</text>
+
+<rect x="76" y="530" width="656" height="42" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="94" y="548" font-size="12.5" font-weight="700" fill="#111827">The payoff:</text>
+<text x="176" y="548" font-size="12.5" fill="#374151">P element properties &#215; S statistics = P&#215;S numbers, every single time.</text>
+<text x="94" y="565" font-size="12" fill="#6b7280">Two elements or seven, oxide or high-entropy alloy &#8212; the vector is always the same length. That was the goal.</text>
+</svg>

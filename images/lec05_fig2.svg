@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" font-family="Helvetica,Arial,sans-serif">
+<defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#9ca3af"/></marker></defs>
+<rect width="760" height="392" fill="#ffffff"/>
+<text x="28" y="34" font-size="18" font-weight="700" fill="#111827">Step 1 &#8212; an element symbol is a pointer. Follow it.</text>
+
+<rect x="28" y="66" width="104" height="104" rx="8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1.5"/>
+<text x="42" y="88" font-size="11" fill="#6366f1">14</text>
+<text x="80" y="126" font-size="34" text-anchor="middle" fill="#312e81">Si</text>
+<text x="80" y="152" font-size="11" text-anchor="middle" fill="#6366f1">silicon</text>
+<text x="80" y="192" font-size="11.5" text-anchor="middle" fill="#6b7280">a symbol</text>
+
+<path d="M142 118 L188 118" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar2)"/>
+<text x="165" y="106" font-size="10.5" text-anchor="middle" fill="#9ca3af">look up</text>
+
+<rect x="200" y="60" width="250" height="140" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+<text x="216" y="82" font-size="11.5" font-weight="700" fill="#374151">measured / computed properties</text>
+<line x1="216" y1="90" x2="434" y2="90" stroke="#e5e7eb"/>
+<text x="216" y="108" font-size="11.5" fill="#6b7280">atomic mass</text><text x="434" y="108" font-size="11.5" text-anchor="end" fill="#111827" font-family="monospace">28.085</text>
+<text x="216" y="126" font-size="11.5" fill="#6b7280">electronegativity</text><text x="434" y="126" font-size="11.5" text-anchor="end" fill="#111827" font-family="monospace">1.90</text>
+<text x="216" y="144" font-size="11.5" fill="#6b7280">melting point</text><text x="434" y="144" font-size="11.5" text-anchor="end" fill="#111827" font-family="monospace">1414</text>
+<text x="216" y="162" font-size="11.5" fill="#6b7280">covalent radius</text><text x="434" y="162" font-size="11.5" text-anchor="end" fill="#111827" font-family="monospace">111</text>
+<text x="216" y="180" font-size="11.5" fill="#6b7280">valence electrons, group, row &#8230;</text><text x="434" y="180" font-size="11.5" text-anchor="end" fill="#111827" font-family="monospace">&#8230;</text>
+<text x="325" y="222" font-size="11.5" text-anchor="middle" fill="#6b7280">what the symbol stood for all along</text>
+
+<path d="M460 118 L506 118" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar2)"/>
+<text x="483" y="106" font-size="10.5" text-anchor="middle" fill="#9ca3af">stack</text>
+
+<rect x="518" y="90" width="214" height="56" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="625" y="114" font-size="12" text-anchor="middle" fill="#065f46" font-family="monospace">[28.085, 1.90, 1414,</text>
+<text x="625" y="132" font-size="12" text-anchor="middle" fill="#065f46" font-family="monospace">111, ... ]</text>
+<text x="625" y="170" font-size="12" text-anchor="middle" font-weight="700" fill="#065f46">element feature vector</text>
+<text x="625" y="190" font-size="11" text-anchor="middle" fill="#6b7280">a point in property space</text>
+
+<line x1="28" y1="256" x2="732" y2="256" stroke="#e5e7eb"/>
+<text x="28" y="286" font-size="13" font-weight="700" fill="#111827">Why this is the whole trick</text>
+<text x="28" y="310" font-size="12.5" fill="#374151">In that space, Si lands close to Ge and far from Na &#8212; not because anyone told the model about the</text>
+<text x="28" y="330" font-size="12.5" fill="#374151">periodic table, but because their numbers genuinely are alike. Chemical intuition has been converted</text>
+<text x="28" y="350" font-size="12.5" fill="#374151">into geometry, which is something a machine can compute with.</text>
+<text x="28" y="376" font-size="11.5" fill="#6b7280" font-style="italic">Values shown are illustrative and rounded.</text>
+</svg>

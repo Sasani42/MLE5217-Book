@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 372" font-family="Helvetica,Arial,sans-serif">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#9ca3af"/></marker></defs>
+<rect width="760" height="372" fill="#ffffff"/>
+<text x="28" y="36" font-size="18" font-weight="700" fill="#111827">What the model actually sees</text>
+
+<text x="28" y="72" font-size="11" font-weight="700" fill="#9ca3af" letter-spacing="1.4">WITHOUT FEATURIZATION</text>
+<rect x="28" y="84" width="124" height="54" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+<text x="90" y="118" font-size="21" text-anchor="middle" fill="#111827">SiO&#8322;</text>
+<path d="M160 111 L204 111" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="214" y="84" width="122" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+<text x="275" y="108" font-size="13" text-anchor="middle" fill="#111827">ML model</text>
+<text x="275" y="126" font-size="11" text-anchor="middle" fill="#9ca3af">(pure arithmetic)</text>
+<path d="M344 111 L388 111" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="398" y="84" width="180" height="54" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+<text x="488" y="108" font-size="14" text-anchor="middle" fill="#b91c1c">&#8220;material #17&#8221;</text>
+<text x="488" y="126" font-size="11" text-anchor="middle" fill="#9ca3af">an ID, not a description</text>
+<text x="28" y="168" font-size="12.5" fill="#b91c1c">Si and Ge end up exactly as similar as Si and uranium. All chemistry must be relearned from data.</text>
+
+<line x1="28" y1="192" x2="732" y2="192" stroke="#e5e7eb"/>
+
+<text x="28" y="228" font-size="11" font-weight="700" fill="#9ca3af" letter-spacing="1.4">WITH FEATURIZATION</text>
+<rect x="28" y="240" width="124" height="54" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+<text x="90" y="274" font-size="21" text-anchor="middle" fill="#111827">SiO&#8322;</text>
+<path d="M160 267 L200 267" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="210" y="240" width="112" height="54" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="266" y="264" font-size="13" text-anchor="middle" fill="#065f46">featurizer</text>
+<text x="266" y="282" font-size="11" text-anchor="middle" fill="#059669">&#966;</text>
+<path d="M330 267 L370 267" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="380" y="240" width="196" height="54" rx="8" fill="#ffffff" stroke="#a7f3d0"/>
+<text x="478" y="264" font-size="12.5" text-anchor="middle" fill="#065f46" font-family="monospace">[0.33, 0.67, 2.55,</text>
+<text x="478" y="282" font-size="12.5" text-anchor="middle" fill="#065f46" font-family="monospace">1.54, 41.2, ... ]</text>
+<path d="M584 267 L624 267" stroke="#9ca3af" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="634" y="240" width="98" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+<text x="683" y="264" font-size="13" text-anchor="middle" fill="#111827">ML model</text>
+<text x="683" y="282" font-size="11" text-anchor="middle" fill="#9ca3af">prediction</text>
+<text x="28" y="324" font-size="12.5" fill="#047857">Chemical similarity becomes numerical closeness &#8212; the model starts with chemistry already in hand.</text>
+<text x="28" y="350" font-size="11.5" fill="#6b7280" font-style="italic">A representation is not just storage. It is a claim about which materials count as similar.</text>
+</svg>

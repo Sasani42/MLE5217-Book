@@ -5,7 +5,22 @@ title: "What to expect this week"
 # Week 7 — What to expect 🤔
 
 In the regression chapter we found the "line of best fit." It worked well.
+
 But a best fit on your training data is not always a best fit on *new* (unseen) data.
+
+Think of this example: You want to buy your friend a dress, but you don't have their measurements. So, you get a dress made based on your measurements. In doing so, you could get the dress to fit you perfectly! Which might look great on you! 💃 🕴️
+but, chances are that it wouldn't fit that well to your friend.
+
+Yet it is more important that the dress (model) fits better for your friend (test data), than you (training data).
+
+Same idea 💡
+
+In machine learning, if we want to discover new materials, or material properties, our aim would be to design a model that can predict test (*unseen*) data. This is more important than your model fitting perfectly to the already known training data. 
+
+Ordinary Least Squares (OLS) regression line is a 'perfect' fit to the training data because it **picks the coefficients** that minimizes the sum of squares error. 
+
+So, if we want to leave some wiggle room and not make it *too tight*, then maybe we need to **loosen the coefficients** a bit.
+
 
 This chapter is the story of that problem, and three clever fixes for it:
 **Ridge**, **Lasso**, and **Elastic Net**.

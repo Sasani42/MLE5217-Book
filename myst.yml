@@ -67,17 +67,18 @@ project:
     - title: "Week 7 — Ridge & Lasso Regression"
       children:
         - file: week07-1_preview.md
-     #   - file: week07-2_ridge_lasso_elasticnet.ipynb
-     #   - file: week07-3_RidgeLassoElasticNet_smalln.ipynb
-    #- title: "Week 8 — Gaussian Processes"
-     # children:
-        #- file: week08-1_preview.md
-       # - file: week08-2_gaussian_process_regression.ipynb
-     #   - file: week08-3_bayesian_optimization.ipynb
-    #- title: "Week 9 — Support Vector Machines"
-     # children:
-     #   - file: week09-1_preview.md
-     #   - file: week09-2_svm.ipynb
+        - file: week07-2_ridge_lasso_elasticnet.ipynb
+        - file: week07-3_RidgeLassoElasticNet_smalln.ipynb
+    - title: "Week 8 — Gaussian Processes"
+      children:
+        - file: week08-1_preview.md
+        - file: week08-2_materials_AI.md
+        - file: week08-3_gaussian_process_regression.ipynb
+        - file: week08-4_bayesian_optimization.ipynb
+    - title: "Week 9 — Support Vector Machines"
+      children:
+        - file: week09-1_preview.md
+        - file: week09-2_svm.ipynb
         
 site:
   template: book-theme

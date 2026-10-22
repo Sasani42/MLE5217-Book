@@ -40,7 +40,7 @@ So far we have mostly **predicted a number**: a hardness, a formation energy, a 
 
 **🐍 Python**
 
-We will be using the the following functions from the pandas library
+We will be using the the following model from the scikit-learn library
 
 [Support Vector Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
 

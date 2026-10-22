@@ -79,7 +79,9 @@ project:
     - title: "Week 9 — Support Vector Machines"
       children:
         - file: week09-1_preview.md
-     #   - file: week09-2_svm.ipynb
+       # - file: week09-2_svm.ipynb
+       # - file: week09-3_in_class_problem.ipynb
+       # - file: week09-4_algorithmic_bias.ipynb
         
 site:
   template: book-theme

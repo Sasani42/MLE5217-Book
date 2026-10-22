@@ -44,5 +44,25 @@ We will be using the the following functions from the pandas library
 
 [Support Vector Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
 
+And the following metrics from scikit-learn
+
+[accuracy_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html)
+
+[classification_report](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html)
+
+[confusion_matrix](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html)
 
 
+And the **dataset** from the below link :
+
+You can copy and paste the following snippet into your notebook
+
+#------------------------------
+# Load the dataset
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/glass/glass.data'
+
+columns = ['Id', 'RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type']
+
+data = pd.read_csv(url, names=columns, index_col='Id')
+
+#------------------------------

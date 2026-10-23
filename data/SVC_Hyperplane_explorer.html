@@ -1,0 +1,384 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SVC Hyperplane Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: control bar over a plot-first two-column workspace (plot | readout panel), stacking on phones */
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --fg:#1B2230; --muted:#5D6778; --line:#DCE0E7;
+  --accent:#1F4E8C; --accent-soft:#E3EBF6;
+  --classA:#DFA324; --classB:#6A9C55; --plane:#D2352C; --ring:#1B2230;
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11141A; --surface:#191E26; --fg:#E5E8EE; --muted:#9AA3B2; --line:#2C333E;
+  --accent:#8AB0E6; --accent-soft:#1F2C40;
+  --classA:#F0BC45; --classB:#8CC071; --plane:#F2594F; --ring:#E5E8EE; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11141A; --surface:#191E26; --fg:#E5E8EE; --muted:#9AA3B2; --line:#2C333E;
+  --accent:#8AB0E6; --accent-soft:#1F2C40;
+  --classA:#F0BC45; --classB:#8CC071; --plane:#F2594F; --ring:#E5E8EE; color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,4vw,36px);line-height:1.1;margin:0;color:var(--accent);text-wrap:balance}
+.lede{margin:0;max-width:68ch;color:var(--muted)}
+
+.controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-end}
+.group{display:flex;flex-direction:column;gap:6px;min-width:0}
+.group > .lab{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;flex-wrap:wrap}
+.seg button{font:600 14px var(--font-body);color:var(--fg);background:transparent;border:0;padding:8px 14px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+.seg button .c{font:400 12px var(--font-mono);opacity:.8;margin-left:6px}
+.btn{font:600 14px var(--font-body);border-radius:8px;padding:8px 16px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.btn.primary{background:var(--plane);border-color:var(--plane);color:#fff}
+.btn.primary[aria-pressed="true"]{background:var(--surface);color:var(--plane)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--fg);padding-block:8px;cursor:pointer}
+.check input{accent-color:var(--accent);width:16px;height:16px}
+.seg.disabled{opacity:.45}
+
+.work{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media (max-width:900px){.work{grid-template-columns:minmax(0,1fr)}}
+.plotbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0;position:relative}
+#plot{width:100%;height:560px}
+@media (max-width:600px){#plot{height:420px}}
+.hint{position:absolute;left:14px;bottom:10px;font-size:12px;color:var(--muted);font-family:var(--font-mono);pointer-events:none}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--font-mono);font-size:13px}
+
+aside{display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel h2{font-family:var(--font-display);font-weight:600;font-size:15px;margin:0 0 8px;color:var(--fg)}
+.eq{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.eq div{line-height:1.8}
+.eq .k{color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th{font-family:var(--font-mono);font-weight:500;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:bottom}
+th:first-child,td:first-child{text-align:left}
+td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--font-mono)}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--accent-soft)}
+tbody tr.sel td{background:var(--accent-soft);font-weight:500}
+tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--plane)}
+.note{font-size:14px;color:var(--muted);margin:8px 0 0}
+.note b{color:var(--fg);font-weight:600}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.legend span{display:flex;align-items:center;gap:10px}
+.sw{width:22px;height:0;flex:none;display:inline-block}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block;border:1px solid rgba(0,0,0,.25)}
+.ringsw{width:16px;height:16px;border-radius:50%;border:2px solid var(--ring);flex:none;display:inline-block}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">MLE5217 · Support vector classifiers</div>
+    <h1>SVC Hyperplane Explorer</h1>
+    <p class="lede">A linear support vector classifier separates two classes with a line in 2D and a plane in 3D. Pick the data, draw the hyperplane, then compare three soft margins. Each margin is a real SVC fit with a different penalty <i>C</i>.</p>
+  </header>
+
+  <div class="controls">
+    <div class="group">
+      <span class="lab">Data</span>
+      <div class="seg" role="group" aria-label="Data dimension">
+        <button id="dim2" aria-pressed="true">2D data</button>
+        <button id="dim3" aria-pressed="false">3D data</button>
+      </div>
+    </div>
+    <div class="group">
+      <span class="lab">Classifier</span>
+      <button id="toggle" class="btn primary" aria-pressed="false">Draw hyperplane</button>
+    </div>
+    <div class="group">
+      <span class="lab">Soft margin</span>
+      <div class="seg" id="marginSeg" role="group" aria-label="Soft margin">
+        <button id="m0" aria-pressed="true">1<span class="c">C=100</span></button>
+        <button id="m1" aria-pressed="false">2<span class="c">C=0.1</span></button>
+        <button id="m2" aria-pressed="false">3<span class="c">C=0.02</span></button>
+      </div>
+    </div>
+    <div class="group">
+      <label class="check"><input type="checkbox" id="compare"> Show other margins' hyperplanes</label>
+    </div>
+    <div class="group">
+      <button id="resample" class="btn">New sample</button>
+    </div>
+  </div>
+
+  <div class="work">
+    <div class="plotbox">
+      <div id="plot"></div>
+      <div class="loading" id="loading">Loading plot…</div>
+      <div class="hint" id="hint">Drag to pan · scroll to zoom</div>
+    </div>
+
+    <aside>
+      <div class="panel">
+        <h2>Decision function</h2>
+        <div class="eq" id="eq"></div>
+      </div>
+
+      <div class="panel">
+        <h2>The three soft margins</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Margin</th><th>C</th><th>Width<br>2/‖w‖</th><th>Support<br>vectors</th><th>Inside<br>margin</th><th>Train<br>acc.</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <p class="note">Smaller <i>C</i> tolerates more points inside the margin, so the margin widens. All three classify the training data perfectly, so <b>training accuracy can't pick the best one</b>. Cross-validation scores each <i>C</i> on held-out folds instead.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Key</h2>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--classA)"></i>Class A (y = −1)</span>
+          <span><i class="dot" style="background:var(--classB)"></i>Class B (y = +1)</span>
+          <span><i class="sw" style="border-top:3px solid var(--plane)"></i>Hyperplane, f(x) = 0</span>
+          <span><i class="sw" style="border-top:2px dashed var(--muted)"></i>Margin edges, f(x) = ±1</span>
+          <span><i class="ringsw"></i>Support vector (on or inside margin)</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script>
+/* ---------- data + linear SVC (SMO) ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=0;while(u===0)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+const norm=a=>Math.sqrt(dot(a,a));
+const unit=a=>{const n=norm(a);return a.map(v=>v/n)};
+
+function makeData(dim,seed){
+  const r=mulberry32(seed), n=20;
+  const c=dim===2?[5,5]:[5,5,5];
+  const u=unit(dim===2?[1,-1]:[1,-1,0.9]);
+  let perp;
+  if(dim===2) perp=[unit([1,1])];
+  else{const p1=unit([1,1,0]);perp=[p1,unit([u[1]*p1[2]-u[2]*p1[1],u[2]*p1[0]-u[0]*p1[2],u[0]*p1[1]-u[1]*p1[0]])]}
+  const X=[],y=[];
+  for(const lab of [-1,1]){
+    let k=0;
+    while(k<n){
+      const along=lab*1.75+gauss(r)*0.65;
+      if(lab*along<0.45) continue;                    // keep a clear gap: data is separable
+      const p=c.map((ci,d)=>ci+along*u[d]);
+      perp.forEach(pv=>{const s=gauss(r)*1.5;for(let d=0;d<dim;d++)p[d]+=s*pv[d]});
+      if(p.some(v=>v<0.4||v>9.6)) continue;
+      X.push(p);y.push(lab);k++;
+    }
+  }
+  return {X,y};
+}
+
+function fitSVC(X,y,C){
+  const n=X.length,dim=X[0].length,tol=1e-3,eps=1e-7;
+  const a=new Array(n).fill(0);let b=0;const w=new Array(dim).fill(0);
+  const K=(i,j)=>dot(X[i],X[j]);
+  const E=i=>dot(w,X[i])+b-y[i];
+  function step(i,j){
+    if(i===j)return 0;
+    const Ei=E(i),Ej=E(j),ai=a[i],aj=a[j];
+    let L,H;
+    if(y[i]!==y[j]){L=Math.max(0,aj-ai);H=Math.min(C,C+aj-ai)}else{L=Math.max(0,ai+aj-C);H=Math.min(C,ai+aj)}
+    if(H-L<eps)return 0;
+    const eta=2*K(i,j)-K(i,i)-K(j,j);
+    if(eta>=0)return 0;
+    let ajn=Math.min(H,Math.max(L,aj-y[j]*(Ei-Ej)/eta));
+    if(Math.abs(ajn-aj)<1e-6*(ajn+aj+1e-6))return 0;
+    const ain=ai+y[i]*y[j]*(aj-ajn);
+    const b1=b-Ei-y[i]*(ain-ai)*K(i,i)-y[j]*(ajn-aj)*K(i,j);
+    const b2=b-Ej-y[i]*(ain-ai)*K(i,j)-y[j]*(ajn-aj)*K(j,j);
+    for(let d=0;d<dim;d++)w[d]+=y[i]*(ain-ai)*X[i][d]+y[j]*(ajn-aj)*X[j][d];
+    a[i]=ain;a[j]=ajn;
+    b=(ain>eps&&ain<C-eps)?b1:(ajn>eps&&ajn<C-eps)?b2:(b1+b2)/2;
+    return 1;
+  }
+  let passes=0,iter=0;
+  while(passes<10&&iter<20000){
+    let changed=0;
+    for(let i=0;i<n;i++){
+      const Ei=E(i);
+      if((y[i]*Ei<-tol&&a[i]<C)||(y[i]*Ei>tol&&a[i]>0)){
+        let best=-1,bv=-1;
+        for(let j=0;j<n;j++){if(j===i)continue;const v=Math.abs(Ei-E(j));if(v>bv){bv=v;best=j}}
+        if(step(i,best)){changed++;continue}
+        for(let k=1;k<n;k++){if(step(i,(i+k)%n)){changed++;break}}
+      }
+    }
+    iter++;passes=changed===0?passes+1:0;
+  }
+  const f=X.map(x=>dot(w,x)+b);
+  const sv=a.map((v,i)=>v>1e-6?i:-1).filter(i=>i>=0);
+  const inside=f.filter((v,i)=>y[i]*v<1-1e-3).length;
+  const acc=f.filter((v,i)=>Math.sign(v)===y[i]).length/n;
+  return {C,w,b,f,sv,inside,acc,width:2/norm(w)};
+}
+
+/* ---------- state ---------- */
+const CS=[100,0.1,0.02];
+const state={dim:2,show:false,sel:0,compare:false,seed:{2:7,3:11}};
+let cache={};
+function current(){
+  const key=state.dim+':'+state.seed[state.dim];
+  if(!cache[key]){const d=makeData(state.dim,state.seed[state.dim]);cache[key]={data:d,models:CS.map(C=>fitSVC(d.X,d.y,C))}}
+  return cache[key];
+}
+
+/* ---------- geometry helpers ---------- */
+const LO=0,HI=10;
+function clipBand(w,b){ // box ∩ {-1 <= w·x+b <= 1}, 2D polygon
+  let poly=[[LO,LO],[HI,LO],[HI,HI],[LO,HI]];
+  for(const s of [1,-1]){
+    const g=p=>s*(dot(w,p)+b)-1,out=[];
+    for(let k=0;k<poly.length;k++){
+      const P=poly[k],Q=poly[(k+1)%poly.length],gP=g(P),gQ=g(Q);
+      if(gP<=0)out.push(P);
+      if(gP*gQ<0){const t=gP/(gP-gQ);out.push([P[0]+t*(Q[0]-P[0]),P[1]+t*(Q[1]-P[1])])}
+    }
+    poly=out;
+  }
+  return poly;
+}
+function lineInBox(w,b,c){ // w0 x + w1 y + b = c
+  const pts=[];
+  const add=(x,y)=>{if(x>=LO-1e-9&&x<=HI+1e-9&&y>=LO-1e-9&&y<=HI+1e-9&&!pts.some(p=>Math.hypot(p[0]-x,p[1]-y)<1e-6))pts.push([x,y])};
+  if(Math.abs(w[1])>1e-12){add(LO,(c-b-w[0]*LO)/w[1]);add(HI,(c-b-w[0]*HI)/w[1])}
+  if(Math.abs(w[0])>1e-12){add((c-b-w[1]*LO)/w[0],LO);add((c-b-w[1]*HI)/w[0],HI)}
+  return pts.length>=2?{x:[pts[0][0],pts[1][0]],y:[pts[0][1],pts[1][1]]}:{x:[],y:[]};
+}
+function planeSurface(w,b,c){ // solve w·x+b=c for z over the box
+  const N=41,xs=[],ys=[],Z=[];
+  for(let i=0;i<N;i++)xs.push(LO+(HI-LO)*i/(N-1));
+  for(let j=0;j<N;j++)ys.push(LO+(HI-LO)*j/(N-1));
+  for(const yv of ys){const row=[];for(const xv of xs){const z=(c-b-w[0]*xv-w[1]*yv)/w[2];row.push(z>=LO-0.05&&z<=HI+0.05?z:null)}Z.push(row)}
+  return {x:xs,y:ys,z:Z};
+}
+
+/* ---------- theme ---------- */
+function tok(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+function alpha(hex,a){const h=hex.replace('#','');const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+/* ---------- render ---------- */
+const plotEl=document.getElementById('plot');
+const fmt=(v,d=2)=>(v<0?'−':'')+Math.abs(v).toFixed(d);
+
+function pointTraces(data,model,T){
+  const {X,y}=data;const traces=[];
+  const groups=[{lab:-1,name:'Class A (y = −1)',col:T.A},{lab:1,name:'Class B (y = +1)',col:T.B}];
+  for(const g of groups){
+    const idx=y.map((v,i)=>v===g.lab?i:-1).filter(i=>i>=0);
+    const cd=idx.map(i=>state.show?fmt(y[i]*model.f[i]):'—');
+    const base={name:g.name,mode:'markers',customdata:cd,showlegend:false,
+      marker:{color:g.col,size:state.dim===2?12:6,line:{color:alpha(T.fg,0.45),width:1}}};
+    if(state.dim===2){
+      traces.push({...base,type:'scatter',x:idx.map(i=>X[i][0]),y:idx.map(i=>X[i][1]),
+        hovertemplate:`${g.name}<br>x₁ = %{x:.2f}, x₂ = %{y:.2f}<br>y·f(x) = %{customdata}<extra></extra>`});
+    }else{
+      traces.push({...base,type:'scatter3d',x:idx.map(i=>X[i][0]),y:idx.map(i=>X[i][1]),z:idx.map(i=>X[i][2]),
+        hovertemplate:`${g.name}<br>(%{x:.2f}, %{y:.2f}, %{z:.2f})<br>y·f(x) = %{customdata}<extra></extra>`});
+    }
+  }
+  return traces;
+}
+
+function render(){
+  if(typeof Plotly==='undefined')return;
+  const {data,models}=current();
+  const m=models[state.sel];
+  const T={fg:tok('--fg'),muted:tok('--muted'),line:tok('--line'),A:tok('--classA'),B:tok('--classB'),plane:tok('--plane'),ring:tok('--ring'),font:tok('--font-body')};
+  const traces=[];
+  const font={family:T.font,color:T.fg,size:13};
+
+  if(state.dim===2){
+    if(state.show){
+      const band=clipBand(m.w,m.b);
+      traces.push({type:'scatter',x:band.map(p=>p[0]).concat(band[0]?[band[0][0]]:[]),y:band.map(p=>p[1]).concat(band[0]?[band[0][1]]:[]),
+        fill:'toself',fillcolor:alpha(T.plane,0.08),line:{width:0},mode:'lines',hoverinfo:'skip',showlegend:false});
+      if(state.compare){models.forEach((o,k)=>{if(k===state.sel)return;const L=lineInBox(o.w,o.b,0);
+        traces.push({type:'scatter',...L,mode:'lines',line:{color:alpha(T.muted,0.8),width:1.5,dash:'dot'},hoverinfo:'skip',showlegend:false})})}
+      for(const c of [-1,1]){const L=lineInBox(m.w,m.b,c);traces.push({type:'scatter',...L,mode:'lines',line:{color:c<0?T.A:T.B,width:2,dash:'dash'},hoverinfo:'skip',showlegend:false})}
+      const L0=lineInBox(m.w,m.b,0);traces.push({type:'scatter',...L0,mode:'lines',line:{color:T.plane,width:3},hoverinfo:'skip',showlegend:false});
+    }
+    traces.push(...pointTraces(data,m,T));
+    if(state.show){traces.push({type:'scatter',mode:'markers',x:m.sv.map(i=>data.X[i][0]),y:m.sv.map(i=>data.X[i][1]),
+      marker:{symbol:'circle-open',size:22,color:T.ring,line:{width:2}},hoverinfo:'skip',showlegend:false})}
+    const ax={range:[LO,HI],gridcolor:alpha(T.muted,0.15),zeroline:false,linecolor:T.line,tickfont:{family:tok('--font-mono'),size:11,color:T.muted},fixedrange:false};
+    Plotly.react(plotEl,traces,{paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font,
+      margin:{l:52,r:16,t:16,b:48},uirevision:'2d',hovermode:'closest',
+      xaxis:{...ax,title:{text:'Feature x₁',font:{color:T.muted}}},
+      yaxis:{...ax,title:{text:'Feature x₂',font:{color:T.muted}},scaleanchor:'x',scaleratio:1}},
+      {responsive:true,displaylogo:false,modeBarButtonsToRemove:['select2d','lasso2d','autoScale2d']});
+  }else{
+    if(state.show){
+      const single=c=>[[0,c],[1,c]];
+      const surf=(c,col,op)=>{const S=planeSurface(m.w,m.b,c);return{type:'surface',...S,colorscale:single(col),showscale:false,opacity:op,hoverinfo:'skip',
+        lighting:{ambient:1,diffuse:0,specular:0,fresnel:0},contours:{x:{highlight:false},y:{highlight:false},z:{highlight:false}}}};
+      if(state.compare){models.forEach((o,k)=>{if(k===state.sel)return;const S=planeSurface(o.w,o.b,0);
+        traces.push({type:'surface',...S,colorscale:single(T.muted),showscale:false,opacity:0.18,hoverinfo:'skip',lighting:{ambient:1,diffuse:0,specular:0},contours:{x:{highlight:false},y:{highlight:false},z:{highlight:false}}})})}
+      traces.push(surf(-1,T.A,0.22),surf(1,T.B,0.22),surf(0,T.plane,0.6));
+    }
+    traces.push(...pointTraces(data,m,T));
+    if(state.show){traces.push({type:'scatter3d',mode:'markers',x:m.sv.map(i=>data.X[i][0]),y:m.sv.map(i=>data.X[i][1]),z:m.sv.map(i=>data.X[i][2]),
+      marker:{symbol:'circle-open',size:11,color:T.ring,line:{width:2}},hoverinfo:'skip',showlegend:false})}
+    const ax=t=>({title:{text:t,font:{color:T.muted}},range:[LO,HI],backgroundcolor:'rgba(0,0,0,0)',gridcolor:alpha(T.muted,0.25),zerolinecolor:alpha(T.muted,0.3),
+      linecolor:T.line,showbackground:false,tickfont:{family:tok('--font-mono'),size:10,color:T.muted}});
+    Plotly.react(plotEl,traces,{paper_bgcolor:'rgba(0,0,0,0)',font,margin:{l:0,r:0,t:0,b:0},uirevision:'3d',
+      scene:{xaxis:ax('x₁'),yaxis:ax('x₂'),zaxis:ax('x₃'),aspectmode:'cube',camera:{eye:{x:1.55,y:-1.55,z:0.9}}}},
+      {responsive:true,displaylogo:false});
+  }
+  document.getElementById('loading').hidden=true;
+  updatePanel(models,m);
+}
+
+function updatePanel(models,m){
+  const sub=['₁','₂','₃'];
+  let terms=m.w.map((v,d)=>`${d===0?(v<0?'−':''):(v<0?' − ':' + ')}${Math.abs(v).toFixed(2)} x${sub[d]}`).join('');
+  terms+=(m.b<0?' − ':' + ')+Math.abs(m.b).toFixed(2);
+  const eq=document.getElementById('eq');
+  eq.innerHTML=state.show
+    ?`<div><span class="k">f(x) =</span> ${terms}</div><div><span class="k">hyperplane:</span> f(x) = 0</div><div><span class="k">margin edges:</span> f(x) = ±1</div><div><span class="k">soft margin ${state.sel+1}:</span> C = ${m.C}</div>`
+    :`<div><span class="k">Press “Draw hyperplane” to fit</span></div><div><span class="k">f(x) = w·x + b for soft margin ${state.sel+1}</span></div>`;
+  document.getElementById('tbody').innerHTML=models.map((o,k)=>
+    `<tr data-k="${k}" class="${k===state.sel?'sel':''}"><td>${k+1}</td><td>${o.C}</td><td>${o.width.toFixed(2)}</td><td>${o.sv.length}</td><td>${o.inside}</td><td>${Math.round(o.acc*100)}%</td></tr>`).join('');
+}
+
+/* ---------- controls ---------- */
+const $=id=>document.getElementById(id);
+function syncControls(){
+  $('dim2').setAttribute('aria-pressed',state.dim===2);$('dim3').setAttribute('aria-pressed',state.dim===3);
+  $('toggle').setAttribute('aria-pressed',state.show);$('toggle').textContent=state.show?'Hide hyperplane':'Draw hyperplane';
+  CS.forEach((_,k)=>$('m'+k).setAttribute('aria-pressed',k===state.sel));
+  $('marginSeg').classList.toggle('disabled',!state.show);
+  $('hint').textContent=state.dim===3?'Drag to rotate · scroll to zoom · right-drag to pan':'Drag to pan · scroll to zoom';
+}
+function setDim(d){if(state.dim===d)return;state.dim=d;syncControls();render()}
+$('dim2').onclick=()=>setDim(2);
+$('dim3').onclick=()=>setDim(3);
+$('toggle').onclick=()=>{state.show=!state.show;syncControls();render()};
+CS.forEach((_,k)=>$('m'+k).onclick=()=>{state.sel=k;state.show=true;syncControls();render()});
+$('tbody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(!tr)return;state.sel=+tr.dataset.k;state.show=true;syncControls();render()});
+$('compare').onchange=e=>{state.compare=e.target.checked;if(state.compare)state.show=true;syncControls();render()};
+$('resample').onclick=()=>{state.seed[state.dim]=Math.floor(Math.random()*1e6);render()};
+
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+mq.addEventListener?.('change',render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+syncControls();
+if(typeof Plotly!=='undefined')render();
+else{$('loading').textContent='The plotting library could not load. Check your connection and reload the page.'}
+</script>
+
+</body></html>

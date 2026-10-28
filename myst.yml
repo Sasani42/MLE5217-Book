@@ -85,6 +85,9 @@ project:
     - title: "Week 10 — Decision Trees & Random Forests"
       children:
         - file: week10-1_preview.md
+        - file: week10-2_decision_trees.ipynb
+        - file: week10-3_random_forests.ipynb
+        - file: week10-4_In_class_problem.ipynb
         
 site:
   template: book-theme

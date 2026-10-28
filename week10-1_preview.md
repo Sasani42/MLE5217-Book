@@ -46,7 +46,7 @@ Build many different decision trees and let them vote (classification) or averag
 - **Ensemble** — a model built by combining many models
 - **Bootstrap / bagging** — giving each tree its own random sample of the training data
 - **Feature importance** — a score showing which features the forest relied on most :::
-
+:::
 
 **🐍 Python**
 
@@ -54,4 +54,16 @@ We will be using the the following models from sklearn
 
 [Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 
+And the metrics
 
+[roc_curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html)
+[roc_auc_Score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html)
+
+For the in-class exercise we can also use the following for featurization (matminer, pymatgen are important materials packages)
+
+However, if you have trouble with their installation, you can revert back to using CBFV instead
+[Matminer : element_property](https://matminer.readthedocs.io/en/latest/)
+[Pymatgen : composition](https://pymatgen.org/pymatgen.core.html)
+
+
+And a [Superconductivity Dataset](data/Supercon.csv) that you can download.

@@ -88,6 +88,11 @@ project:
         - file: week10-2_decision_trees.ipynb
         - file: week10-3_random_forests.ipynb
         - file: week10-4_In_class_problem.ipynb
+    - title: "Week 11 - Neural Networks"
+      children:
+        - file: week11-1_neural_networks.ipynb
+        - file: week11-2_deep_learning_taster.ipynb
+        - file: week11-3_learning_to_adapt.ipynb
         
 site:
   template: book-theme
